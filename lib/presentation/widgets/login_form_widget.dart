@@ -47,7 +47,7 @@ class LoginFormWidget extends HookConsumerWidget {
             controller: emailController,
             decoration: InputDecorations.decoration(
               hintText: 'admin',
-              labelText: 'Código de usuario',
+              labelText: 'Nombre de usuario',
             ),
             onChanged: ref.read(loginFormProvider.notifier).email,
             validator: (_) => emailValidator,
