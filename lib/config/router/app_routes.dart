@@ -20,6 +20,7 @@ class AppRoutes {
 
   static final String login = '/login';
   static final String home = '/home';
+  static final String moduleChildren = '/moduleChildren';
 
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
@@ -27,7 +28,8 @@ class AppRoutes {
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(path: login, builder: (context, state) => LoginScreen()),
-      GoRoute(path: home, builder: (context, state) => HomeScreen())
+      GoRoute(path: home, builder: (context, state) => HomeModulesScreen()),
+      GoRoute(path: moduleChildren, builder: (context, state) => HomeServicesScreen())
     ],
   );
 

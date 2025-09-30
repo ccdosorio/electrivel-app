@@ -1,6 +1,4 @@
 // External dependencies
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 
 // Internal dependencies

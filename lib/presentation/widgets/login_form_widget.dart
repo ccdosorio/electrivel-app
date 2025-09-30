@@ -135,7 +135,7 @@ class _SubmitButton extends HookConsumerWidget {
 }
 
 class _ResetPassword extends HookConsumerWidget {
-  const _ResetPassword({super.key});
+  const _ResetPassword();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
