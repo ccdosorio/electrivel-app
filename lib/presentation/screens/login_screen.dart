@@ -1,7 +1,6 @@
 // Flutter
 // Internal dependencies
 import 'package:electrivel_app/presentation/presentation.dart';
-import 'package:electrivel_app/shared/shared.dart';
 import 'package:flutter/material.dart';
 // External dependencies
 import 'package:hooks_riverpod/hooks_riverpod.dart';

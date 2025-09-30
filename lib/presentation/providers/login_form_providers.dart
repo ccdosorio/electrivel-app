@@ -71,6 +71,10 @@ class LoginNotifier extends StateNotifier<LoginState> {
     isLoading(false);
     return loginResponse;
   }
+
+  Future<void> logout() async {
+    await AuthDatasource().logout();
+  }
 }
 
 

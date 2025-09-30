@@ -1,2 +1,6 @@
+export 'home_icon_widget.dart';
+export 'home_menu_card_widget.dart';
+export 'home_modules_menu_widget.dart';
+export 'home_services_menu_widget.dart';
 export 'login_form_widget.dart';
 export 'login_header_widget.dart';
