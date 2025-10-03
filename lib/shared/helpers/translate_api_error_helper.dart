@@ -6,6 +6,10 @@ class TranslateApiErrorHelper {
     return {
       'AUTH': {
         'InvalidCredentials': 'Credenciales inválidas',
+      },
+      'ATTENDANCE': {
+        'AlreadyCheckedIn': 'Ya ha registrado su ingreso',
+        'MustCheckInFirst': 'Primero debe marcar su ingreso'
       }
     };
   }

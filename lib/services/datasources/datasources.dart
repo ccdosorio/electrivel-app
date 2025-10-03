@@ -1,2 +1,3 @@
 export 'auth_datasource.dart';
 export 'home_datasource.dart';
+export 'register_datasource.dart';

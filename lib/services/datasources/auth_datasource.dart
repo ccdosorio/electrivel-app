@@ -54,6 +54,10 @@ class AuthDatasource {
       ),
       SharedPreferencesPlugin.writeStringValue(
           key: SharedPreferencesConstants.username, value: auth.user.username),
+      SharedPreferencesPlugin.writeStringValue(
+          key: SharedPreferencesConstants.fullName,
+          value: auth.user.fullName
+      )
     ]);
   }
 
