@@ -1,3 +1,6 @@
+export 'clock_register_widget.dart';
+export 'current_location_card_widget.dart';
+export 'formatted_date_register_widget.dart';
 export 'home_icon_widget.dart';
 export 'home_menu_card_widget.dart';
 export 'home_modules_menu_widget.dart';

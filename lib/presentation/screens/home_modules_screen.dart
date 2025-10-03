@@ -16,6 +16,8 @@ class HomeModulesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    final textTheme = Theme.of(context).textTheme;
+
     return FutureBuilder(
         future: ref.read(homeProvider.notifier).loadMenu(),
         builder: (context, asyncSnapshot) {
@@ -34,9 +36,26 @@ class HomeModulesScreen extends ConsumerWidget {
                 icon: const Icon(Icons.login_outlined),
               ),
             ),
-            body: RefreshIndicator(
-              onRefresh: ref.read(homeProvider.notifier).loadMenu,
-              child: const HomeModulesMenuWidget(),
+            body: FutureBuilder(
+              future: SharedPreferencesPlugin.getStringValue(key: SharedPreferencesConstants.fullName),
+              builder: (context, asyncSnapshot) {
+                if (asyncSnapshot.connectionState == ConnectionState.waiting) return LoadingFeedbackWidget();
+                return RefreshIndicator(
+                  onRefresh: ref.read(homeProvider.notifier).loadMenu,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, bottom: 20),
+                        child: Text('¡Hola, ${asyncSnapshot.data ?? ''}!', style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold
+                        )),
+                      ),
+                      Expanded(child: const HomeModulesMenuWidget()),
+                    ],
+                  ),
+                );
+              }
             ),
           );
         });
