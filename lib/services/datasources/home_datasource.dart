@@ -13,7 +13,6 @@ class HomeDatasource {
         return (response: ResponseModel(error: response.errorMessage), menuList: null);
       }
 
-      log(response.data.toString());
       final menuList = List<HomeMenuModel>.from(response.data.map((x) => HomeMenuModel.fromJson(x)));
       return (response: ResponseModel(), menuList: menuList);
     }
