@@ -9,7 +9,8 @@ class TranslateApiErrorHelper {
       },
       'ATTENDANCE': {
         'AlreadyCheckedIn': 'Ya ha registrado su ingreso',
-        'MustCheckInFirst': 'Primero debe marcar su ingreso'
+        'MustCheckInFirst': 'Primero debe marcar su ingreso',
+        'AlreadyCheckedOut': 'Ya ha registrado su salida'
       }
     };
   }
