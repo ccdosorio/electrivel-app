@@ -20,7 +20,7 @@ class UsersListScreen extends HookConsumerWidget {
     // Cargar usuarios cuando se monta la pantalla
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        usersNotifier.loadEmployees();
+        usersNotifier.loadUsers();
       });
       return null;
     }, []);
@@ -36,8 +36,8 @@ class UsersListScreen extends HookConsumerWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => usersNotifier.loadEmployees(),
-        child: usersState.employees.isEmpty && usersState.isLoading
+        onRefresh: () => usersNotifier.loadUsers(),
+        child: usersState.users.isEmpty && usersState.isLoading
             ? const Center(child: CircularProgressIndicator.adaptive())
             : usersState.error != null
             ? Center(
@@ -47,13 +47,13 @@ class UsersListScreen extends HookConsumerWidget {
                     Text('Error: ${usersState.error}'),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => usersNotifier.loadEmployees(),
+                      onPressed: () => usersNotifier.loadUsers(),
                       child: const Text('Reintentar'),
                     ),
                   ],
                 ),
               )
-            : usersState.employees.isEmpty
+            : usersState.users.isEmpty
             ? const Center(child: Text('No hay usuarios'))
             : NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollInfo) {
@@ -61,7 +61,7 @@ class UsersListScreen extends HookConsumerWidget {
                       scrollInfo.metrics.maxScrollExtent * 0.9) {
                     if (!usersState.isLoading &&
                         usersState.currentPage < usersState.totalPages) {
-                      usersNotifier.loadEmployees(loadMore: true);
+                      usersNotifier.loadUsers(loadMore: true);
                     }
                   }
                   return false;
@@ -69,10 +69,10 @@ class UsersListScreen extends HookConsumerWidget {
                 child: ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount:
-                      usersState.employees.length +
+                      usersState.users.length +
                       (usersState.currentPage < usersState.totalPages ? 1 : 0),
                   itemBuilder: (context, index) {
-                    if (index == usersState.employees.length) {
+                    if (index == usersState.users.length) {
                       return const Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Center(
@@ -81,7 +81,7 @@ class UsersListScreen extends HookConsumerWidget {
                       );
                     }
 
-                    final employee = usersState.employees[index];
+                    final employee = usersState.users[index];
                     return UserCard(employee: employee);
                   },
                 ),

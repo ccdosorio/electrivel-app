@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/legacy.dart';
 import 'package:electrivel_app/services/services.dart';
 
 class UsersState extends Equatable {
-  final List<UserModel> employees;
+  final List<UserModel> users;
   final bool isLoading;
   final int currentPage;
   final int totalPages;
@@ -14,7 +14,7 @@ class UsersState extends Equatable {
   final String? error;
 
   const UsersState({
-    this.employees = const [],
+    this.users = const [],
     this.isLoading = false,
     this.currentPage = 1,
     this.totalPages = 1,
@@ -23,10 +23,17 @@ class UsersState extends Equatable {
   });
 
   @override
-  List<Object?> get props => [employees, isLoading, currentPage, totalPages, total, error];
+  List<Object?> get props => [
+    users,
+    isLoading,
+    currentPage,
+    totalPages,
+    total,
+    error,
+  ];
 
   UsersState copyWith({
-    List<UserModel>? employees,
+    List<UserModel>? users,
     bool? isLoading,
     int? currentPage,
     int? totalPages,
@@ -34,7 +41,7 @@ class UsersState extends Equatable {
     String? error,
   }) {
     return UsersState(
-      employees: employees ?? this.employees,
+      users: users ?? this.users,
       isLoading: isLoading ?? this.isLoading,
       currentPage: currentPage ?? this.currentPage,
       totalPages: totalPages ?? this.totalPages,
@@ -49,30 +56,29 @@ class UsersNotifier extends StateNotifier<UsersState> {
 
   final _datasource = UsersDatasource();
 
-  Future<void> loadEmployees({bool loadMore = false}) async {
+  Future<void> loadUsers({bool loadMore = false}) async {
     if (state.isLoading) return;
-    
+
     state = state.copyWith(isLoading: true);
 
     final page = loadMore ? state.currentPage + 1 : 1;
-    final (:response, :employeeList) = await _datasource.getEmployees(page: page);
+    final (:response, :employeeList) = await _datasource.getUsers(
+      page: page,
+    );
 
     if (response.isError) {
-      state = state.copyWith(
-        isLoading: false,
-        error: response.error,
-      );
+      state = state.copyWith(isLoading: false, error: response.error);
       return;
     }
 
     final data = employeeList!;
-    final employees = loadMore 
-        ? [...state.employees, ...data.employees]
-        : data.employees;
+    final users = loadMore
+        ? [...state.users, ...data.users]
+        : data.users;
 
     state = state.copyWith(
       isLoading: false,
-      employees: employees,
+      users: users,
       currentPage: data.currentPage,
       totalPages: data.totalPages,
       total: data.total,

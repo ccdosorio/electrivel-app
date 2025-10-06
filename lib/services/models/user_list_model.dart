@@ -6,14 +6,14 @@ UserListModel userListModelFromJson(String str) => UserListModel.fromJson(json.d
 String userListModelToJson(UserListModel data) => json.encode(data.toJson());
 
 class UserListModel {
-  List<UserModel> employees;
+  List<UserModel> users;
   int total;
   int limit;
   int currentPage;
   int totalPages;
 
   UserListModel({
-    required this.employees,
+    required this.users,
     required this.total,
     required this.limit,
     required this.currentPage,
@@ -21,7 +21,7 @@ class UserListModel {
   });
 
   factory UserListModel.fromJson(Map<String, dynamic> json) => UserListModel(
-    employees: List<UserModel>.from(json["employees"].map((x) => UserModel.fromJson(x))),
+    users: List<UserModel>.from(json["users"].map((x) => UserModel.fromJson(x))),
     total: json["total"],
     limit: json["limit"],
     currentPage: json["currentPage"],
@@ -29,7 +29,7 @@ class UserListModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "employees": List<dynamic>.from(employees.map((x) => x.toJson())),
+    "users": List<dynamic>.from(users.map((x) => x.toJson())),
     "total": total,
     "limit": limit,
     "currentPage": currentPage,

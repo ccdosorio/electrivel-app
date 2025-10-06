@@ -3,3 +3,6 @@ export 'auth_model.dart';
 export 'home_menu_model.dart';
 export 'user_model.dart';
 export 'user_list_model.dart';
+export 'role_model.dart';
+export 'company_model.dart';
+export 'create_user_model.dart';
