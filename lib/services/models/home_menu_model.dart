@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final homeMenuModel = homeMenuModelFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 List<HomeMenuModel> homeMenuModelFromJson(String str) => List<HomeMenuModel>.from(json.decode(str).map((x) => HomeMenuModel.fromJson(x)));

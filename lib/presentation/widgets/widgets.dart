@@ -7,3 +7,4 @@ export 'home_modules_menu_widget.dart';
 export 'home_services_menu_widget.dart';
 export 'login_form_widget.dart';
 export 'login_header_widget.dart';
+export 'user_card_widget.dart';
