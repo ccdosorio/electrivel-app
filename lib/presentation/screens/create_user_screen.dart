@@ -25,10 +25,8 @@ class CreateUserScreen extends HookConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
         title: const Text('Crear Usuario'),
-        backgroundColor: const Color(0xFFF7F8FA),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator.adaptive())

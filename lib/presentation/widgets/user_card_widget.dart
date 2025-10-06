@@ -15,11 +15,11 @@ class UserCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 4),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -49,13 +49,13 @@ class UserCard extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.secondaryColor,
+                  color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   employee.company,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppTheme.secondaryColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),

@@ -12,9 +12,9 @@ class CreateUserState extends Equatable {
   final List<CompanyModel> companies;
   final String? selectedRoleId;
   final String? selectedCompanyId;
-  final String? validateUsername;
-  final String? validateFullName;
-  final String? validatePassword;
+  final String username;
+  final String fullName;
+  final String password;
 
   const CreateUserState({
     this.isLoading = false,
@@ -22,9 +22,9 @@ class CreateUserState extends Equatable {
     this.companies = const [],
     this.selectedRoleId,
     this.selectedCompanyId,
-    this.validateUsername,
-    this.validateFullName,
-    this.validatePassword,
+    this.username = '',
+    this.fullName = '',
+    this.password = '',
   });
 
   @override
@@ -34,10 +34,26 @@ class CreateUserState extends Equatable {
     companies,
     selectedRoleId,
     selectedCompanyId,
-    validateUsername,
-    validateFullName,
-    validatePassword,
+    username,
+    fullName,
+    password,
   ];
+
+  String? get validateUsername {
+    if (username.trim().isEmpty) return 'Requerido';
+    return null;
+  }
+
+  String? get validateFullName {
+    if (fullName.trim().isEmpty) return 'Requerido';
+    return null;
+  }
+
+  String? get validatePassword {
+    if (password.trim().isEmpty) return 'Requerido';
+    if (password.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
+    return null;
+  }
 
   CreateUserState copyWith({
     bool? isLoading,
@@ -45,9 +61,9 @@ class CreateUserState extends Equatable {
     List<CompanyModel>? companies,
     String? selectedRoleId,
     String? selectedCompanyId,
-    String? validateUsername,
-    String? validateFullName,
-    String? validatePassword,
+    String? username,
+    String? fullName,
+    String? password,
   }) {
     return CreateUserState(
       isLoading: isLoading ?? this.isLoading,
@@ -55,9 +71,9 @@ class CreateUserState extends Equatable {
       companies: companies ?? this.companies,
       selectedRoleId: selectedRoleId ?? this.selectedRoleId,
       selectedCompanyId: selectedCompanyId ?? this.selectedCompanyId,
-      validateUsername: validateUsername,
-      validateFullName: validateFullName,
-      validatePassword: validatePassword,
+      username: username ?? this.username,
+      fullName: fullName ?? this.fullName,
+      password: password ?? this.password,
     );
   }
 }
@@ -67,10 +83,6 @@ class CreateUserNotifier extends StateNotifier<CreateUserState> {
 
   final _usersDatasource = UsersDatasource();
   final _companiesDatasource = CompaniesDatasource();
-
-  String _username = '';
-  String _fullName = '';
-  String _password = '';
 
   Future<void> loadInitialData() async {
     state = state.copyWith(isLoading: true);
@@ -86,18 +98,15 @@ class CreateUserNotifier extends StateNotifier<CreateUserState> {
   }
 
   void username(String value) {
-    _username = value;
-    _validateUsername();
+    state = state.copyWith(username: value);
   }
 
   void fullName(String value) {
-    _fullName = value;
-    _validateFullName();
+    state = state.copyWith(fullName: value);
   }
 
   void password(String value) {
-    _password = value;
-    _validatePassword();
+    state = state.copyWith(password: value);
   }
 
   void selectRole(String roleId) {
@@ -108,39 +117,7 @@ class CreateUserNotifier extends StateNotifier<CreateUserState> {
     state = state.copyWith(selectedCompanyId: companyId);
   }
 
-  void _validateUsername() {
-    if (_username.isEmpty) {
-      state = state.copyWith(validateUsername: 'El nombre de usuario es requerido');
-      return;
-    }
-    state = state.copyWith(validateUsername: null);
-  }
-
-  void _validateFullName() {
-    if (_fullName.isEmpty) {
-      state = state.copyWith(validateFullName: 'El nombre completo es requerido');
-      return;
-    }
-    state = state.copyWith(validateFullName: null);
-  }
-
-  void _validatePassword() {
-    if (_password.isEmpty) {
-      state = state.copyWith(validatePassword: 'La contraseña es requerida');
-      return;
-    }
-    if (_password.length < 6) {
-      state = state.copyWith(validatePassword: 'La contraseña debe tener al menos 6 caracteres');
-      return;
-    }
-    state = state.copyWith(validatePassword: null);
-  }
-
   bool validateForm() {
-    _validateUsername();
-    _validateFullName();
-    _validatePassword();
-
     return state.validateUsername == null &&
         state.validateFullName == null &&
         state.validatePassword == null &&
@@ -148,49 +125,43 @@ class CreateUserNotifier extends StateNotifier<CreateUserState> {
         state.selectedCompanyId != null;
   }
 
-void resetForm() {
-  _username = '';
-  _fullName = '';
-  _password = '';
-  state = state.copyWith(
-    selectedRoleId: null,
-    selectedCompanyId: null,
-    validateUsername: null,
-    validateFullName: null,
-    validatePassword: null,
-  );
-}
-
-Future<ResponseModel> createUser() async {
-  if (!validateForm()) {
-    return ResponseModel(error: 'Por favor completa todos los campos');
+  void resetForm() {
+    state = state.copyWith(
+      username: '',
+      fullName: '',
+      password: '',
+      selectedRoleId: null,
+      selectedCompanyId: null,
+    );
   }
 
-  state = state.copyWith(isLoading: true);
+  Future<ResponseModel> createUser() async {
+    if (!validateForm()) {
+      return ResponseModel(error: 'Por favor completa todos los campos');
+    }
 
-  final user = CreateUserModel(
-    username: _username,
-    fullName: _fullName,
-    password: _password,
-    roleId: state.selectedRoleId!,
-    companyId: state.selectedCompanyId!,
-  );
+    state = state.copyWith(isLoading: true);
 
-  final response = await _usersDatasource.createUser(user);
+    final user = CreateUserModel(
+      username: state.username,
+      fullName: state.fullName,
+      password: state.password,
+      roleId: state.selectedRoleId!,
+      companyId: state.selectedCompanyId!,
+    );
 
-  state = state.copyWith(isLoading: false);
+    final response = await _usersDatasource.createUser(user);
 
-  if (!response.isError) {
-    resetForm();
+    state = state.copyWith(isLoading: false);
+
+    if (!response.isError) {
+      resetForm();
+    }
+
+    return response;
   }
-
-  return response;
-}
 
   void reset() {
-    _username = '';
-    _fullName = '';
-    _password = '';
     state = const CreateUserState();
   }
 }

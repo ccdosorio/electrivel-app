@@ -44,7 +44,7 @@ class CreateUserFormWidget extends HookConsumerWidget {
             enabled: !isLoading,
             controller: usernameController,
             decoration: InputDecorations.decoration(
-              hintText: 'usuario123',
+              hintText: 'jdoe',
               labelText: 'Nombre de usuario',
             ),
             onChanged: ref.read(createUserProvider.notifier).username,
@@ -57,7 +57,7 @@ class CreateUserFormWidget extends HookConsumerWidget {
             enabled: !isLoading,
             controller: fullNameController,
             decoration: InputDecorations.decoration(
-              hintText: 'Juan Pérez',
+              hintText: 'John Doe',
               labelText: 'Nombre completo',
             ),
             onChanged: ref.read(createUserProvider.notifier).fullName,
@@ -226,9 +226,7 @@ class _SubmitButton extends HookConsumerWidget {
 
                   if (context.mounted) {
                     ref.read(usersProvider.notifier);
-                    context.pop(
-                      true,
-                    ); // Retornar true para indicar que se creó un usuario
+                    context.pop(true);
                   }
                   return;
                 }

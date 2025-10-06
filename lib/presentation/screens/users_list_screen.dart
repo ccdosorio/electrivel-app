@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/presentation/presentation.dart';
+import 'package:electrivel_app/config/config.dart';
 
 class UsersListScreen extends HookConsumerWidget {
   const UsersListScreen({super.key});
@@ -26,14 +27,11 @@ class UsersListScreen extends HookConsumerWidget {
     }, []);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Usuarios'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => context.push('/users/create'),
-          ),
-        ],
+      appBar: AppBar(title: const Text('Usuarios')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push('/users/create'),
+        backgroundColor: AppTheme.secondaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: RefreshIndicator(
         onRefresh: () => usersNotifier.loadUsers(),
