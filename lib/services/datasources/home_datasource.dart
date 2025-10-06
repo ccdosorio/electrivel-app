@@ -1,6 +1,4 @@
 // Internal dependencies
-import 'dart:developer';
-
 import 'package:electrivel_app/services/services.dart';
 import 'package:electrivel_app/shared/shared.dart';
 
