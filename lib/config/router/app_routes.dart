@@ -25,6 +25,9 @@ class AppRoutes {
   static final String users = '/users';
   static final String usersCreate = '/users/create';
 
+  static final String toolsManagement = '/tools/management';
+  static final String toolsManagementCreate = '/tools/management/create';
+
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
     initialLocation: login,
@@ -37,6 +40,8 @@ class AppRoutes {
       GoRoute(path: attendanceCheckOut, builder: (context, state) => RegisterScreen(isEntry: false)),
       GoRoute(path: users, builder: (context, state) => UsersListScreen()),
       GoRoute(path: usersCreate, builder: (context, state) => CreateUserScreen()),
+      GoRoute(path: toolsManagement, builder: (context, state) => ToolsListScreen()),
+      //GoRoute(path: toolsManagementCreate, builder: (context, state) => CreateToolScreen()),
     ],
   );
 
