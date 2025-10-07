@@ -41,7 +41,7 @@ class AppRoutes {
       GoRoute(path: users, builder: (context, state) => UsersListScreen()),
       GoRoute(path: usersCreate, builder: (context, state) => CreateUserScreen()),
       GoRoute(path: toolsManagement, builder: (context, state) => ToolsListScreen()),
-      //GoRoute(path: toolsManagementCreate, builder: (context, state) => CreateToolScreen()),
+      GoRoute(path: toolsManagementCreate, builder: (context, state) => CreateToolScreen()),
     ],
   );
 

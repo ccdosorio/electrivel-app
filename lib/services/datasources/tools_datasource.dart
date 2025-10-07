@@ -18,4 +18,14 @@ class ToolsDatasource {
     return (response: ResponseModel(), toolList: toolList);
   }
 
+  Future<ResponseModel> createTool(CreateToolModel tool) async {
+    final response = await HttpPlugin.post('/tools/catalog', data: tool.toJson());
+
+    if (response.isError) {
+      return ResponseModel(error: response.errorMessage);
+    }
+
+    return ResponseModel();
+  }
+
 }

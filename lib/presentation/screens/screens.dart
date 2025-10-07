@@ -5,3 +5,4 @@ export 'register_screen.dart';
 export 'users_list_screen.dart';
 export 'create_user_screen.dart';
 export 'tools_list_screen.dart';
+export 'create_tool_screen.dart';
