@@ -1,4 +1,6 @@
 // Flutter
+import 'package:electrivel_app/presentation/screens/tools_assigned_create_screen.dart';
+import 'package:electrivel_app/presentation/screens/tools_assigned_list_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 // External dependencies
@@ -14,8 +16,10 @@ class AppRoutes {
   static final String assistance = '/assistance';
   static final String attendanceCheckIn = '/attendance/check-in';
   static final String attendanceCheckOut = '/attendance/check-out';
-  static final String toolsAssigned = '/tools-assigned';
-  static final String toolsRegister = '/tools-register';
+  static final String toolsAssigned = '/tools/assigned';
+  static final String toolsAssignedCreate = '/tools/assigned/create';
+  static final String toolsAssignedDetail = '/tools/assigned/detail';
+  static final String toolsRegister = '/tools/register';
   static final String assistanceAssigned = '/assistance-assigned';
 
   static final String login = '/login';
@@ -27,7 +31,7 @@ class AppRoutes {
 
   static final String toolsManagement = '/tools/management';
   static final String toolsManagementCreate = '/tools/management/create';
-
+  
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
     initialLocation: login,
@@ -42,6 +46,9 @@ class AppRoutes {
       GoRoute(path: usersCreate, builder: (context, state) => CreateUserScreen()),
       GoRoute(path: toolsManagement, builder: (context, state) => ToolsListScreen()),
       GoRoute(path: toolsManagementCreate, builder: (context, state) => CreateToolScreen()),
+      GoRoute(path: toolsAssigned, builder: (context, state) => ToolsAssignedList()),
+      GoRoute(path: toolsAssignedDetail, builder: (context, state) => ToolsAssignedListDetail()),
+      GoRoute(path: toolsAssignedCreate, builder: (context, state) => ToolsAssignedCreateScreen()),
     ],
   );
 

@@ -7,9 +7,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/config/config.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   await _loadEnvironmentVariables();
+  await initializeDateFormatting('es_ES', null);
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: scaffoldMessengerKey,
       routerConfig: AppRoutes.routes,
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
       title: 'Electrivel',
     );
   }
