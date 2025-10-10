@@ -4,3 +4,4 @@ export 'register_datasource.dart';
 export 'users_datasource.dart';
 export 'companies_datasource.dart';
 export 'tools_datasource.dart';
+export 'tools_assignment_datasource.dart';

@@ -11,6 +11,11 @@ class TranslateApiErrorHelper {
         'AlreadyCheckedIn': 'Ya ha registrado su ingreso',
         'MustCheckInFirst': 'Primero debe marcar su ingreso',
         'AlreadyCheckedOut': 'Ya ha registrado su salida'
+      },
+      'TOOLS': {
+        'ToolsNotFound': 'Algunas herramientas no existen o están inactivas',
+        'ToolsNotAvailable': 'Algunas herramientas no están disponibles para retirarse',
+        'ToolsAlreadyInUse': 'Algunas herramientas ya están en uso'
       }
     };
   }
