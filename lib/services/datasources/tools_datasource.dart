@@ -42,4 +42,16 @@ class ToolsDatasource {
 
     return ResponseModel();
   }
+
+  Future<List<ToolModel>> getToolsCatalog() async {
+    final response = await HttpPlugin.get('/tools/catalog');
+
+    if (response.isError) {
+      return [];
+    }
+
+    return (response.data as List)
+        .map((e) => ToolModel.fromJson(e))
+        .toList();
+  }
 }

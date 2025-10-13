@@ -21,13 +21,11 @@ class HomeModulesMenuWidget extends ConsumerWidget {
     return HomeGridMenuLayout<HomeMenuModel>(
       items: menu,
       onTap: (item) {
-        // Si tiene hijos, navegar a la pantalla de submódulos
         if (item.children.isNotEmpty) {
           final notifier = ref.read(homeProvider.notifier);
           notifier.loadModuleMenu(item.children, item.name);
           context.push(AppRoutes.moduleChildren);
         } else {
-          // Si no tiene hijos, navegar directamente a la URL del item
           context.push(item.url);
         }
       },
