@@ -161,7 +161,7 @@ class ToolsAssignedCreateScreen extends HookConsumerWidget {
           ref.read(reloadToolAssignedList.notifier).state = true;
           if (!context.mounted) return;
 
-          context.push(AppRoutes.toolsAssigned);
+          context.push(AppRoutes.tools);
         },
         child: Icon(Icons.save, color: Colors.white),
       ),
