@@ -15,7 +15,9 @@ class TranslateApiErrorHelper {
       'TOOLS': {
         'ToolsNotFound': 'Algunas herramientas no existen o están inactivas',
         'ToolsNotAvailable': 'Algunas herramientas no están disponibles para retirarse',
-        'ToolsAlreadyInUse': 'Algunas herramientas ya están en uso'
+        'ToolsAlreadyInUse': 'Algunas herramientas ya están en uso',
+        'AssignmentNotFound': 'La asignación no fue encontrada',
+        'AssignmentNotInUse': 'La asignación no está en uso'
       }
     };
   }

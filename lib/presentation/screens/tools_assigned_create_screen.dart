@@ -161,7 +161,7 @@ class ToolsAssignedCreateScreen extends HookConsumerWidget {
           ref.read(reloadToolAssignedList.notifier).state = true;
           if (!context.mounted) return;
 
-          context.push(AppRoutes.toolsAssigned);
+          context.pop();
         },
         child: Icon(Icons.save, color: Colors.white),
       ),
@@ -279,7 +279,7 @@ class _ToolCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Notas:',
+                        Text('Descripción:',
                             style: theme.textTheme.bodySmall
                                 ?.copyWith(fontWeight: FontWeight.w600)),
                         const SizedBox(height: 2),
