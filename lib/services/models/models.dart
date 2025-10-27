@@ -12,3 +12,4 @@ export 'tool_list_model.dart';
 export 'create_tool_model.dart';
 export 'tool_assignment_page_list_model.dart';
 export 'tool_assignment_create_model.dart';
+export 'tool_assignment_return_model.dart';

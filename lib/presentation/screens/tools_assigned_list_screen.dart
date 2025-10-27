@@ -15,6 +15,9 @@ class ToolsAssignedList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+    final textEditingController = useTextEditingController();
+
     final pageController = useMemoized(
           () => PagingController<int, ToolAssignmentModel>(firstPageKey: 1),
     );
@@ -49,8 +52,70 @@ class ToolsAssignedList extends HookConsumerWidget {
                 },
                 child: ToolAssignmentCard(
                     assignment: item,
-                    onReturn: () {
+                    onReturn: () async {
+                      showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => DialogWidget(
+                          title: 'Confirmar esta acción',
+                          content: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                controller: textEditingController,
+                                decoration: InputDecorations.decoration(
+                                  labelText: 'Notas de retiro'
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) return 'Requerido';
+                                  return null;
+                                },
+                              )
+                          ),
+                          actions: [
+                            DialogButtonWidget(
+                              onPressed: () {
+                                context.pop();
+                              },
+                              textButton: 'Cancelar',
+                              isPrimary: false,
+                            ),
+                            DialogButtonWidget(
+                              onPressed: () async {
+                                final toolsIds = item.tools.map((item) => item.toolId).toList();
 
+                                final validate = formKey.currentState?.validate() ?? false;
+                                if (!validate) return;
+
+                                final response = await ToolsAssignmentDatasource().returnAssignment(
+                                    assignmentId: item.id,
+                                    toolsIds: toolsIds,
+                                    checkInNotes: textEditingController.value.text
+                                );
+
+                                if (response.isError) {
+                                  SnackBarNotifications.showGeneralSnackBar(
+                                      title: 'Error', content: response.error!,
+                                      theme: InfoThemeSnackBar.alert);
+                                  return;
+                                }
+                                pageController.refresh();
+
+                                SnackBarNotifications.showGeneralSnackBar(
+                                    title: 'Éxito',
+                                    content: '¡Se ha devuelto con éxito!',
+                                    theme: InfoThemeSnackBar.ok
+                                );
+
+                                if (!context.mounted) return;
+                                textEditingController.clear();
+                                context.pop();
+                              },
+                              textButton: 'Confirmar',
+                              isPrimary: true,
+                            ),
+                          ],
+                        ),
+                      );
                     },
                 ),
               ),

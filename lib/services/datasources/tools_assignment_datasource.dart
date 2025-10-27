@@ -1,7 +1,7 @@
 import 'package:electrivel_app/services/services.dart';
 import 'package:electrivel_app/shared/shared.dart';
 
-class ToolsAssignmentDatasource {
+class   ToolsAssignmentDatasource {
   Future<ToolAssignmentPageListModel> getPageList(int page) async {
     final response = await HttpPlugin.get(
       '/tools/assignments/user',
@@ -33,6 +33,23 @@ class ToolsAssignmentDatasource {
         'toolId': e.id
       }).toList()
     });
+
+    if (response.isError) {
+      return ResponseModel(error: response.errorMessage);
+    }
+
+    return ResponseModel();
+  }
+
+  Future<ResponseModel> returnAssignment({
+    required int assignmentId,
+    required List<String> toolsIds,
+    required String checkInNotes
+  }) async {
+    final tools = toolsIds.map((item) => ToolAssignment(toolId: item)).toList();
+    final body = ToolsAssignmentReturn(checkInNotes: checkInNotes, tools: tools);
+
+    final response = await HttpPlugin.patch('/tools/assignments/$assignmentId/return', data: body.toJson());
 
     if (response.isError) {
       return ResponseModel(error: response.errorMessage);
