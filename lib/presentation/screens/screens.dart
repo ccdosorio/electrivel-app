@@ -7,3 +7,4 @@ export 'create_user_screen.dart';
 export 'tools_list_screen.dart';
 export 'create_tool_screen.dart';
 export 'tools_assigned_list_screen.dart';
+export 'attendance_management_screen.dart';

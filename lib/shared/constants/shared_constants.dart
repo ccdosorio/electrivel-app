@@ -9,6 +9,10 @@ class SharedConstants {
     "alarm": Icons.alarm,
     "build": Icons.build,
     "ambulance": Icons.fire_truck_outlined,
+    "group": Icons.group,
+    "pending_actions": Icons.pending_actions,
+    "alarm_on": Icons.alarm_on,
+    "alarm_off": Icons.alarm_off,
   };
 
   static String get urlBase => '${dotenv.get('API_URL')}:${dotenv.get('API_URL_PORT')}/api/v1';

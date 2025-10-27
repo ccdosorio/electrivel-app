@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final assignmentModel = assignmentModelFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ToolAssignmentModel assignmentModelFromJson(String str) => ToolAssignmentModel.fromJson(json.decode(str));
