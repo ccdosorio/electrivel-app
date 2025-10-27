@@ -22,6 +22,7 @@ class AppRoutes {
   static final String attendance = '/attendance';
   static final String attendanceCheckIn = '/attendance/check-in';
   static final String attendanceCheckOut = '/attendance/check-out';
+  static final String attendanceManagement = '/attendance/management';
 
   // Users
   static final String users = '/users';
@@ -51,6 +52,7 @@ class AppRoutes {
       GoRoute(path: tools, builder: (context, state) => ToolsAssignedList()),
       GoRoute(path: toolsAssignedDetail, builder: (context, state) => ToolsAssignedListDetail()),
       GoRoute(path: toolsAssignedCreate, builder: (context, state) => ToolsAssignedCreateScreen()),
+      GoRoute(path: attendanceManagement, builder: (context, state) => AttendanceManagementScreen()),
     ],
   );
 
