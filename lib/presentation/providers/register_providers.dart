@@ -46,3 +46,10 @@ final locationStreamProvider = StreamProvider<Position>((ref) {
   );
   return Geolocator.getPositionStream(locationSettings: settings);
 });
+
+final locationProvider = FutureProvider<Position>((ref) {
+  const settings = LocationSettings(
+    accuracy: LocationAccuracy.best,
+  );
+  return Geolocator.getCurrentPosition(locationSettings: settings);
+});

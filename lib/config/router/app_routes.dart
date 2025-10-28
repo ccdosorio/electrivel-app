@@ -1,7 +1,7 @@
 // Flutter
 import 'package:electrivel_app/presentation/screens/tools_assigned_create_screen.dart';
 import 'package:electrivel_app/presentation/screens/tools_assigned_list_detail_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 // External dependencies
 import 'package:go_router/go_router.dart';
@@ -17,6 +17,8 @@ class AppRoutes {
 
   // Assistance
   static final String assistance = '/assistance';
+  static final String assistanceManagement = '/assistance/management';
+  static final String assistanceManagementCreate = '/assistance/management-create';
 
   // Attendance
   static final String attendance = '/attendance';
@@ -53,6 +55,9 @@ class AppRoutes {
       GoRoute(path: toolsAssignedDetail, builder: (context, state) => ToolsAssignedListDetail()),
       GoRoute(path: toolsAssignedCreate, builder: (context, state) => ToolsAssignedCreateScreen()),
       GoRoute(path: attendanceManagement, builder: (context, state) => AttendanceManagementScreen()),
+      GoRoute(path: assistance, builder: (context, state) => AssistanceManagementScreen(isEmployee: true)),
+      GoRoute(path: assistanceManagement, builder: (context, state) => AssistanceManagementScreen()),
+      GoRoute(path: assistanceManagementCreate, builder: (context, state) => AssistanceManagementCreateScreen()),
     ],
   );
 
