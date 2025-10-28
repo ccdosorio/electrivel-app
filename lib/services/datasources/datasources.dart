@@ -6,3 +6,4 @@ export 'companies_datasource.dart';
 export 'tools_datasource.dart';
 export 'tools_assignment_datasource.dart';
 export 'attendance_datasource.dart';
+export 'assistance_management_datasource.dart';

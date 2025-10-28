@@ -7,3 +7,4 @@ export 'tools_providers.dart';
 export 'create_tool_providers.dart';
 export 'tools_assigned_providers.dart';
 export 'attendance_providers.dart';
+export 'assistance_providers.dart';

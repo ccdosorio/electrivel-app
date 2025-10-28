@@ -18,6 +18,12 @@ class TranslateApiErrorHelper {
         'ToolsAlreadyInUse': 'Algunas herramientas ya están en uso',
         'AssignmentNotFound': 'La asignación no fue encontrada',
         'AssignmentNotInUse': 'La asignación no está en uso'
+      },
+      'USER': {
+        'UserNotFound': 'El usuario no fue encontrado'
+      },
+      'INSURANCE': {
+        'InsuranceCompanyNotFound': 'La empresa no fue encontrada',
       }
     };
   }
