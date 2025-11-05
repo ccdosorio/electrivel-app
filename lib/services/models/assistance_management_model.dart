@@ -24,23 +24,23 @@ class AssistanceManagementModel {
   final String? endLatitude;
   final String? endLongitude;
   final String? endNotes;
-  final String createdBy;
-  final DateTime createdAt;
-  final String updatedBy;
-  final DateTime updatedAt;
+  final String? createdBy;
+  final DateTime? createdAt;
+  final String? updatedBy;
+  final DateTime? updatedAt;
 
   AssistanceManagementModel({
-    required this.id,
-    required this.insuranceCompanyId,
-    required this.insuranceCompanyName,
-    required this.userId,
-    required this.username,
-    required this.status,
-    required this.caseNumber,
-    required this.clientName,
-    required this.clientPhone,
-    required this.serviceAddress,
-    required this.description,
+    this.id = 0,
+    this.insuranceCompanyId = 0,
+    this.insuranceCompanyName = '',
+    this.userId = 0,
+    this.username = '',
+    this.status = '',
+    this.caseNumber = '',
+    this.clientName = '',
+    this.clientPhone = '',
+    this.serviceAddress = '',
+    this.description = '',
     this.startTimestamp,
     this.startLatitude,
     this.startLongitude,
@@ -49,10 +49,10 @@ class AssistanceManagementModel {
     this.endLatitude,
     this.endLongitude,
     this.endNotes,
-    required this.createdBy,
-    required this.createdAt,
-    required this.updatedBy,
-    required this.updatedAt,
+    this.createdBy,
+    this.createdAt,
+    this.updatedBy,
+    this.updatedAt,
   });
 
   AssistanceManagementModel copyWith({
@@ -153,8 +153,8 @@ class AssistanceManagementModel {
     "endLongitude": endLongitude,
     "endNotes": endNotes,
     "createdBy": createdBy,
-    "createdAt": createdAt.toIso8601String(),
+    "createdAt": createdAt?.toIso8601String(),
     "updatedBy": updatedBy,
-    "updatedAt": updatedAt.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
   };
 }

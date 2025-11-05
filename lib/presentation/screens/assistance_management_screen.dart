@@ -16,7 +16,6 @@ import 'package:intl/intl.dart';
 // Internal dependencies
 import 'package:electrivel_app/services/services.dart';
 
-// ======= PÁGINA PRINCIPAL =======
 class AssistanceManagementScreen extends HookConsumerWidget {
   final bool isEmployee;
   const AssistanceManagementScreen({super.key, this.isEmployee = false});
@@ -147,7 +146,8 @@ class AssistanceCard extends HookConsumerWidget {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.visibility_rounded),
                       onPressed: () {
-                        // TODO: abrir detalle
+                        ref.read(assistanceDetailProvider.notifier).state = item;
+                        context.push(AppRoutes.attendanceManagementDetail);
                       },
                       label: const Text('Ver'),
                     ),

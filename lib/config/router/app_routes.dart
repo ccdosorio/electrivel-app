@@ -25,6 +25,7 @@ class AppRoutes {
   static final String attendanceCheckIn = '/attendance/check-in';
   static final String attendanceCheckOut = '/attendance/check-out';
   static final String attendanceManagement = '/attendance/management';
+  static final String attendanceManagementDetail = '/attendance/management/detail';
 
   // Users
   static final String users = '/users';
@@ -58,6 +59,7 @@ class AppRoutes {
       GoRoute(path: assistance, builder: (context, state) => AssistanceManagementScreen(isEmployee: true)),
       GoRoute(path: assistanceManagement, builder: (context, state) => AssistanceManagementScreen()),
       GoRoute(path: assistanceManagementCreate, builder: (context, state) => AssistanceManagementCreateScreen()),
+      GoRoute(path: attendanceManagementDetail, builder: (context, state) => AssistanceManagementDetailScreen()),
     ],
   );
 

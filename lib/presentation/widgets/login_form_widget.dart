@@ -1,8 +1,10 @@
 // Flutter
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 // External dependencies
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -10,6 +12,42 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:electrivel_app/config/config.dart';
 import 'package:electrivel_app/shared/shared.dart';
 import 'package:electrivel_app/presentation/presentation.dart';
+
+import '../../geolocation_task_handler.dart';
+
+
+Future<void> _ensureLocationPermissions() async {
+  var permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+    await Geolocator.requestPermission();
+  }
+}
+
+Future<void> _ensureNotificationsPermissions() async {
+  final notificationPermission = await FlutterForegroundTask.checkNotificationPermission();
+  if (notificationPermission != NotificationPermission.granted) {
+    await FlutterForegroundTask.requestNotificationPermission();
+  }
+}
+
+Future<void> _requestBatteryPermissions() async {
+  if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
+    await FlutterForegroundTask.requestIgnoreBatteryOptimization();
+  }
+}
+
+Future<void> startTracking() async {
+  await _ensureLocationPermissions();
+  await _ensureNotificationsPermissions();
+  await _requestBatteryPermissions();
+
+  await FlutterForegroundTask.startService(
+    serviceTypes: const [ForegroundServiceTypes.location],
+    notificationTitle: 'Configurando ubicación geografica',
+    notificationText: '',
+    callback: startCallback,
+  );
+}
 
 class LoginFormWidget extends HookConsumerWidget {
   const LoginFormWidget({super.key});
@@ -110,9 +148,12 @@ class _SubmitButton extends HookConsumerWidget {
           final isValidate = formKey.currentState?.validate() ?? false;
           if (!isValidate) return;
 
-          final response = await ref.read(loginFormProvider.notifier).login();
+          final (response, authModel) = await ref.read(loginFormProvider.notifier).login();
           if (!response.isError && context.mounted) {
             context.go(AppRoutes.home);
+            if (authModel.user.role == 'BOSS') return;
+
+            await startTracking();
             return;
           }
 
