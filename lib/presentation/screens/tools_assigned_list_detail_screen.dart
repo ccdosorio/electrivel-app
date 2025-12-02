@@ -11,23 +11,32 @@ class ToolsAssignedListDetail extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalle del Kit #${toolsAssigned.id}'),
-      ),
+      appBar: AppBar(title: Text('Detalle del Kit #${toolsAssigned.id}')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Herramientas', style: textTheme.titleLarge),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(
+                'Herramientas',
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            // -------------------
             const SizedBox(height: 15),
-            Expanded(child: ListView.builder(
+            Expanded(
+              child: ListView.builder(
                 itemCount: toolsAssigned.tools.length,
                 itemBuilder: (context, index) {
                   final tool = toolsAssigned.tools[index];
                   return ToolItemCard(tool: tool);
                 },
-            ))
+              ),
+            ),
           ],
         ),
       ),

@@ -18,3 +18,4 @@ export 'tool_assignment_return_model.dart';
 export 'assistance_management_model.dart';
 export 'assistance_company_model.dart';
 export 'assistance_create_model.dart';
+export 'attendance_detail_model.dart';

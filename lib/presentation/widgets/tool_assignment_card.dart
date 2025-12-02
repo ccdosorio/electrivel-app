@@ -18,13 +18,20 @@ class ToolAssignmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final totalTools = assignment.tools.fold<int>(0, (acc, t) => acc + (t.quantity));
+    final totalTools = assignment.tools.fold<int>(
+      0,
+      (acc, t) => acc + (t.quantity),
+    );
     final checkout = assignment.checkOutTimestamp?.toLocal();
     final date = checkout == null
         ? '—'
         : DateFormat("d MMM - HH:mm", 'es').format(checkout);
 
     final (pillColor, pillText) = _statusChipData(assignment.status, theme);
+
+    // Verificamos si hay notas para mostrar
+    final hasCheckOutNotes = assignment.checkOutNotes.isNotEmpty;
+    final hasCheckInNotes = assignment.checkInNotes.isNotEmpty;
 
     return Card(
       elevation: 1.5,
@@ -38,6 +45,7 @@ class ToolAssignmentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- HEADER ---
             Row(
               children: [
                 Expanded(
@@ -49,7 +57,10 @@ class ToolAssignmentCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: pillColor.withValues(alpha: .15),
                     borderRadius: BorderRadius.circular(20),
@@ -64,11 +75,14 @@ class ToolAssignmentCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
 
             const SizedBox(height: 8),
-            Divider(height: 16, color: theme.dividerColor.withValues(alpha: .6)),
+            Divider(
+              height: 16,
+              color: theme.dividerColor.withValues(alpha: .6),
+            ),
 
+            // --- ESTADÍSTICAS ---
             Row(
               children: [
                 Expanded(
@@ -87,17 +101,63 @@ class ToolAssignmentCard extends StatelessWidget {
                 ),
               ],
             ),
+
+            // --- SECCIÓN DE NOTAS (NUEVO) ---
+            if (hasCheckOutNotes || hasCheckInNotes) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.3,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (hasCheckOutNotes)
+                      _NoteItem(
+                        label: 'Notas de retiro:',
+                        content: assignment.checkOutNotes,
+                        icon: Icons.output_rounded,
+                      ),
+
+                    if (hasCheckOutNotes && hasCheckInNotes)
+                      const SizedBox(height: 8), // Separador si hay ambas
+
+                    if (hasCheckInNotes)
+                      _NoteItem(
+                        label: 'Notas de devolución:',
+                        content: assignment.checkInNotes,
+                        icon: Icons.input_rounded,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+
             const SizedBox(height: 12),
 
+            // --- BOTÓN ---
             Center(
               child: ElevatedButton(
                 onPressed: onReturn,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.secondaryColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
-                child: const Text('Devolver', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Devolver',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -122,6 +182,8 @@ class ToolAssignmentCard extends StatelessWidget {
     return (theme.colorScheme.secondary, status.isEmpty ? '—' : status);
   }
 }
+
+// --- WIDGETS AUXILIARES ---
 
 class _InfoColumn extends StatelessWidget {
   const _InfoColumn({
@@ -153,6 +215,49 @@ class _InfoColumn extends StatelessWidget {
           value,
           style: theme.textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NoteItem extends StatelessWidget {
+  final String label;
+  final String content;
+  final IconData icon;
+
+  const _NoteItem({
+    required this.label,
+    required this.content,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 14, color: theme.colorScheme.primary),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 18, top: 2),
+          child: Text(
+            content,
+            style: theme.textTheme.bodySmall?.copyWith(color: Colors.black87),
           ),
         ),
       ],

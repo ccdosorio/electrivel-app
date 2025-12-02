@@ -62,9 +62,7 @@ class UsersNotifier extends StateNotifier<UsersState> {
     state = state.copyWith(isLoading: true);
 
     final page = loadMore ? state.currentPage + 1 : 1;
-    final (:response, :employeeList) = await _datasource.getUsers(
-      page: page,
-    );
+    final (:response, :employeeList) = await _datasource.getUsers(page: page);
 
     if (response.isError) {
       state = state.copyWith(isLoading: false, error: response.error);
@@ -72,9 +70,7 @@ class UsersNotifier extends StateNotifier<UsersState> {
     }
 
     final data = employeeList!;
-    final users = loadMore
-        ? [...state.users, ...data.users]
-        : data.users;
+    final users = loadMore ? [...state.users, ...data.users] : data.users;
 
     state = state.copyWith(
       isLoading: false,
@@ -84,6 +80,17 @@ class UsersNotifier extends StateNotifier<UsersState> {
       total: data.total,
       error: null,
     );
+  }
+
+  Future<bool> deleteUser(int userId) async {
+    final response = await _datasource.deactivateUser(userId);
+
+    if (response.isError) {
+      return false;
+    }
+
+    await loadUsers(loadMore: false);
+    return true;
   }
 
   void reset() {

@@ -284,8 +284,8 @@ class _ToolCard extends StatelessWidget {
                                 ?.copyWith(fontWeight: FontWeight.w600)),
                         const SizedBox(height: 2),
                         Text(
-                          tool.maintenanceNotes?.isNotEmpty == true
-                              ? tool.maintenanceNotes!
+                          tool.description.isNotEmpty == true
+                              ? tool.description
                               : '—',
                           style: theme.textTheme.bodyMedium,
                         ),

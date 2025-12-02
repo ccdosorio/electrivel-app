@@ -13,6 +13,58 @@ import 'package:electrivel_app/config/config.dart';
 class UsersListScreen extends HookConsumerWidget {
   const UsersListScreen({super.key});
 
+  void _showDeleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+    int userId,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Eliminar usuario'),
+        content: const Text(
+          '¿Estás seguro de que deseas eliminar este usuario?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context); // Cerrar diálogo
+
+              // Llamar al provider
+              final success = await ref
+                  .read(usersProvider.notifier)
+                  .deleteUser(userId);
+
+              if (context.mounted) {
+                if (success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Usuario eliminado correctamente'),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Error al eliminar usuario'),
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text(
+              'Eliminar',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usersState = ref.watch(usersProvider);
@@ -52,7 +104,7 @@ class UsersListScreen extends HookConsumerWidget {
                 ),
               )
             : usersState.users.isEmpty
-            ? const Center(child: Text('No hay usuarios'))
+            ? const EmptyListWidget()
             : NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollInfo) {
                   if (scrollInfo.metrics.pixels >=
@@ -80,7 +132,15 @@ class UsersListScreen extends HookConsumerWidget {
                     }
 
                     final employee = usersState.users[index];
-                    return UserCard(employee: employee);
+                    return UserCard(
+                      employee: employee,
+                      onDelete: () => _showDeleteConfirmation(
+                        context,
+                        ref,
+                        employee
+                            .id, // Asumiendo que UserModel tiene un campo 'id'
+                      ),
+                    );
                   },
                 ),
               ),
