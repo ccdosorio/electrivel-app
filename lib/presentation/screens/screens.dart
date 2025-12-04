@@ -11,3 +11,4 @@ export 'attendance_management_screen.dart';
 export 'assistance_management_screen.dart';
 export 'assistance_management_detail_screen.dart';
 export 'assistance_management_create_screen.dart';
+export 'splash_screen.dart';

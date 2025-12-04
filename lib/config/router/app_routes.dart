@@ -15,6 +15,7 @@ class AppRoutes {
   static final String login = '/login';
   static final String home = '/home';
   static final String moduleChildren = '/moduleChildren';
+  static final String splash = '/splash.jpeg';
 
   // Assistance
   static final String assistance = '/assistance';
@@ -44,7 +45,7 @@ class AppRoutes {
 
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
-    initialLocation: login,
+    initialLocation: splash,
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(path: login, builder: (context, state) => LoginScreen()),
@@ -65,6 +66,7 @@ class AppRoutes {
       GoRoute(path: assistanceManagementCreate, builder: (context, state) => AssistanceManagementCreateScreen()),
       GoRoute(path: attendanceManagementDetail, builder: (context, state) => AssistanceManagementDetailScreen()),
       GoRoute(path: reportHours, builder: (context, state) => EmployeeHoursDetailScreen()),
+      GoRoute(path: splash, builder: (context, state) => SplashScreen())
     ],
   );
 
