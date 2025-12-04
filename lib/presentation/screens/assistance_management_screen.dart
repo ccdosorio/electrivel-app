@@ -1,7 +1,8 @@
 // Flutter
 import 'package:electrivel_app/config/config.dart';
 import 'package:electrivel_app/presentation/presentation.dart';
-import 'package:electrivel_app/shared/dialogs/dialog_button_widget.dart' show DialogButtonWidget;
+import 'package:electrivel_app/shared/dialogs/dialog_button_widget.dart'
+    show DialogButtonWidget;
 import 'package:electrivel_app/shared/dialogs/dialog_widget.dart';
 import 'package:electrivel_app/shared/models/models.dart';
 import 'package:electrivel_app/shared/notification/snack_bar_notification.dart';
@@ -39,32 +40,56 @@ class AssistanceManagementScreen extends HookConsumerWidget {
           ref.invalidate(assistanceListProvider(isEmployee));
         },
         child: asyncItems.when(
-          loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-          error: (_, __) => const Center(child: Text('Error al cargar asistencias')),
-          data: (items) => ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemBuilder: (_, i) => AssistanceCard(
-              item: items[i],
-              isEmployee: isEmployee,
-            ),
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemCount: items.length,
-          ),
+          loading: () =>
+              const Center(child: CircularProgressIndicator.adaptive()),
+          error: (_, __) =>
+              const Center(child: Text('Error al cargar asistencias')),
+          data: (items) {
+            if (items.isEmpty) {
+              return LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: const EmptyListWidget(
+                      message: 'No hay asistencias asignadas',
+                      icon: Icons.assignment_late_outlined,
+                    ),
+                  ),
+                ),
+              );
+            }
+            // ---------------------------------
+
+            return ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemBuilder: (_, i) =>
+                  AssistanceCard(item: items[i], isEmployee: isEmployee),
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemCount: items.length,
+            );
+          },
         ),
       ),
-      floatingActionButton: isEmployee ? null : FloatingActionButton(
-        onPressed: () async {
-          context.push(AppRoutes.assistanceManagementCreate);
-        },
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton: isEmployee
+          ? null
+          : FloatingActionButton(
+              onPressed: () async {
+                context.push(AppRoutes.assistanceManagementCreate);
+              },
+              child: const Icon(Icons.add, color: Colors.white),
+            ),
     );
   }
 }
 
 // ======= CARD =======
 class AssistanceCard extends HookConsumerWidget {
-  const AssistanceCard({super.key, required this.item, required this.isEmployee});
+  const AssistanceCard({
+    super.key,
+    required this.item,
+    required this.isEmployee,
+  });
   final AssistanceManagementModel item;
   final bool isEmployee;
 
@@ -91,8 +116,10 @@ class AssistanceCard extends HookConsumerWidget {
                 Flexible(
                   child: Text(
                     'No. de caso: ${item.caseNumber}',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(color: Colors.black, fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -106,11 +133,31 @@ class AssistanceCard extends HookConsumerWidget {
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
             child: Column(
               children: [
-                _InfoRow(icon: Icons.badge_rounded, label: 'Empleado', value: item.username),
-                _InfoRow(icon: Icons.apartment_rounded, label: 'Aseguradora', value: item.insuranceCompanyName),
-                _InfoRow(icon: Icons.person_rounded, label: 'Cliente', value: item.clientName),
-                _InfoRow(icon: Icons.phone_rounded, label: 'Teléfono', value: item.clientPhone),
-                _InfoRow(icon: Icons.location_on_rounded, label: 'Dirección', value: item.serviceAddress),
+                _InfoRow(
+                  icon: Icons.badge_rounded,
+                  label: 'Empleado',
+                  value: item.username,
+                ),
+                _InfoRow(
+                  icon: Icons.apartment_rounded,
+                  label: 'Aseguradora',
+                  value: item.insuranceCompanyName,
+                ),
+                _InfoRow(
+                  icon: Icons.person_rounded,
+                  label: 'Cliente',
+                  value: item.clientName,
+                ),
+                _InfoRow(
+                  icon: Icons.phone_rounded,
+                  label: 'Teléfono',
+                  value: item.clientPhone,
+                ),
+                _InfoRow(
+                  icon: Icons.location_on_rounded,
+                  label: 'Dirección',
+                  value: item.serviceAddress,
+                ),
                 _InfoRow(
                   icon: Icons.notes_rounded,
                   label: 'Descripción',
@@ -121,13 +168,17 @@ class AssistanceCard extends HookConsumerWidget {
                 _ChipLine(
                   icon: Icons.play_circle_fill_rounded,
                   label: 'Inicio',
-                  value: item.startTimestamp != null ? dateFmt.format(item.startTimestamp!) : '',
+                  value: item.startTimestamp != null
+                      ? dateFmt.format(item.startTimestamp!)
+                      : '',
                 ),
                 const SizedBox(height: 10),
                 _ChipLine(
                   icon: Icons.stop_circle_rounded,
                   label: 'Fin',
-                  value: item.endTimestamp != null ? dateFmt.format(item.endTimestamp!) : '',
+                  value: item.endTimestamp != null
+                      ? dateFmt.format(item.endTimestamp!)
+                      : '',
                 ),
               ],
             ),
@@ -136,7 +187,6 @@ class AssistanceCard extends HookConsumerWidget {
           const Divider(height: 16, thickness: 1),
 
           // Acciones
-
           if (!isEmployee) ...[
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
@@ -165,7 +215,7 @@ class AssistanceCard extends HookConsumerWidget {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.secondaryColor
+                        backgroundColor: AppTheme.secondaryColor,
                       ),
                       onPressed: () {
                         showDialog<bool>(
@@ -174,24 +224,27 @@ class AssistanceCard extends HookConsumerWidget {
                           builder: (context) => DialogWidget(
                             title: 'Confirmar esta acción',
                             content: Form(
-                                key: formKey,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('¿Está seguro de ${item.startTimestamp == null ? 'iniciar' : 'finalizar'} la asistencia?'),
-                                    const SizedBox(height: 15),
-                                    TextFormField(
-                                      controller: textEditingController,
-                                      decoration: InputDecorations.decoration(
-                                          labelText: 'Notas'
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) return 'Requerido';
-                                        return null;
-                                      },
-                                    )
-                                  ],
-                                )
+                              key: formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '¿Está seguro de ${item.startTimestamp == null ? 'iniciar' : 'finalizar'} la asistencia?',
+                                  ),
+                                  const SizedBox(height: 15),
+                                  TextFormField(
+                                    controller: textEditingController,
+                                    decoration: InputDecorations.decoration(
+                                      labelText: 'Notas',
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty)
+                                        return 'Requerido';
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                             actions: [
                               DialogButtonWidget(
@@ -203,43 +256,56 @@ class AssistanceCard extends HookConsumerWidget {
                               ),
                               DialogButtonWidget(
                                 onPressed: () async {
-                                  final validate = formKey.currentState?.validate() ?? false;
+                                  final validate =
+                                      formKey.currentState?.validate() ?? false;
                                   if (!validate) return;
 
-                                  final asyncPos = await ref.read(locationProvider.future);
+                                  final asyncPos = await ref.read(
+                                    locationProvider.future,
+                                  );
                                   final isStart = item.startTimestamp == null;
 
                                   var response = ResponseModel();
 
                                   if (isStart) {
-                                    response = await AssistanceManagementDatasource().start(
-                                        item.id,
-                                        pos: asyncPos,
-                                        startNotes: textEditingController.text
-                                    );
+                                    response =
+                                        await AssistanceManagementDatasource()
+                                            .start(
+                                              item.id,
+                                              pos: asyncPos,
+                                              startNotes:
+                                                  textEditingController.text,
+                                            );
                                   } else {
-                                    response = await AssistanceManagementDatasource().complete(
-                                        item.id,
-                                        pos: asyncPos,
-                                        endNotes: textEditingController.text
-                                    );
+                                    response =
+                                        await AssistanceManagementDatasource()
+                                            .complete(
+                                              item.id,
+                                              pos: asyncPos,
+                                              endNotes:
+                                                  textEditingController.text,
+                                            );
                                   }
 
                                   textEditingController.clear();
                                   if (response.isError) {
                                     SnackBarNotifications.showGeneralSnackBar(
-                                        title: 'Error', content: response.error!,
-                                        theme: InfoThemeSnackBar.alert);
+                                      title: 'Error',
+                                      content: response.error!,
+                                      theme: InfoThemeSnackBar.alert,
+                                    );
                                     return;
                                   }
 
                                   SnackBarNotifications.showGeneralSnackBar(
-                                      title: 'Éxito',
-                                      content: '¡Se ha devuelto con éxito!',
-                                      theme: InfoThemeSnackBar.ok
+                                    title: 'Éxito',
+                                    content: '¡Se ha devuelto con éxito!',
+                                    theme: InfoThemeSnackBar.ok,
                                   );
 
-                                  ref.invalidate(assistanceListProvider(isEmployee));
+                                  ref.invalidate(
+                                    assistanceListProvider(isEmployee),
+                                  );
                                   if (!context.mounted) return;
                                   context.pop();
                                 },
@@ -250,13 +316,16 @@ class AssistanceCard extends HookConsumerWidget {
                           ),
                         );
                       },
-                      child: Text(item.startTimestamp == null ? 'Iniciar' : 'Finalizar', style: TextStyle(color: Colors.white)),
+                      child: Text(
+                        item.startTimestamp == null ? 'Iniciar' : 'Finalizar',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ]
+          ],
         ],
       ),
     );
@@ -291,7 +360,9 @@ class _InfoRow extends StatelessWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
                 children: [
                   TextSpan(
                     text: '$label: ',
@@ -316,7 +387,11 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _ChipLine extends StatelessWidget {
-  const _ChipLine({required this.icon, required this.label, required this.value});
+  const _ChipLine({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
   final IconData icon;
   final String label;
   final String value;
@@ -334,7 +409,12 @@ class _ChipLine extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: theme.colorScheme.primary),
           const SizedBox(width: 8),
-          Text('$label: ', style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            '$label: ',
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           Expanded(
             child: Text(
               value,
@@ -423,4 +503,3 @@ class _StatusPill extends StatelessWidget {
     );
   }
 }
-

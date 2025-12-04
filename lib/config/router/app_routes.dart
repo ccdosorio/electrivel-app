@@ -1,4 +1,5 @@
 // Flutter
+import 'package:electrivel_app/presentation/screens/employee_hours_detail_screen.dart';
 import 'package:electrivel_app/presentation/screens/tools_assigned_create_screen.dart';
 import 'package:electrivel_app/presentation/screens/tools_assigned_list_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,9 @@ class AppRoutes {
   static final String toolsAssignedCreate = '/tools/assigned/create';
   static final String toolsAssignedDetail = '/tools/assigned/detail';
 
+  // Hours report
+  static final String reportHours = '/report/hours';
+
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
     initialLocation: login,
@@ -60,6 +64,7 @@ class AppRoutes {
       GoRoute(path: assistanceManagement, builder: (context, state) => AssistanceManagementScreen()),
       GoRoute(path: assistanceManagementCreate, builder: (context, state) => AssistanceManagementCreateScreen()),
       GoRoute(path: attendanceManagementDetail, builder: (context, state) => AssistanceManagementDetailScreen()),
+      GoRoute(path: reportHours, builder: (context, state) => EmployeeHoursDetailScreen()),
     ],
   );
 

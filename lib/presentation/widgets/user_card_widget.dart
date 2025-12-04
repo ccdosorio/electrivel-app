@@ -7,8 +7,9 @@ import 'package:electrivel_app/config/theme/app_theme.dart';
 
 class UserCard extends StatelessWidget {
   final UserModel employee;
+  final VoidCallback? onDelete;
 
-  const UserCard({super.key, required this.employee});
+  const UserCard({super.key, required this.employee, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class UserCard extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Text(
@@ -43,10 +45,11 @@ class UserCard extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: 12,
+                  vertical: 6,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
@@ -57,10 +60,26 @@ class UserCard extends StatelessWidget {
                   style: TextStyle(
                     color: AppTheme.secondaryColor,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 12,
                   ),
                 ),
               ),
+              // Botón de eliminar
+              if (onDelete != null) ...[
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: onDelete,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(
+                      Icons.delete_outline,
+                      color: Colors.red.shade400,
+                      size: 22,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 12),
