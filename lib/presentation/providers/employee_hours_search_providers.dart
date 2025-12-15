@@ -1,4 +1,5 @@
 import 'package:electrivel_app/services/services.dart';
+import 'package:electrivel_app/shared/models/response_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hooks_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,13 @@ class EmployeeHoursSearchState extends Equatable {
 
   final UserModel? selectedUser;
   final List<UserModel> availableUsers;
-  final AttendanceDetailModel? result;
+
+  // Resultado 1: Asistencias (Entradas/Salidas)
+  // Renombrado de 'result' a 'attendanceResult' para ser explícitos
+  final AttendanceDetailModel? attendanceResult;
+
+  // Resultado 2: Asistencias Técnicas (Servicios completados)
+  final UserCompletedAssistancesModel? assistanceResult;
 
   const EmployeeHoursSearchState({
     this.isLoading = false,
@@ -24,14 +31,13 @@ class EmployeeHoursSearchState extends Equatable {
     this.endDate,
     this.selectedUser,
     this.availableUsers = const [],
-    this.result,
+    this.attendanceResult,
+    this.assistanceResult,
   });
 
   // Validamos que ambas existan para habilitar el botón
   bool get canSearch =>
       selectedUser != null && startDate != null && endDate != null;
-
-  AttendanceDetailModel? get data => result;
 
   EmployeeHoursSearchState copyWith({
     bool? isLoading,
@@ -41,7 +47,8 @@ class EmployeeHoursSearchState extends Equatable {
     DateTime? endDate,
     UserModel? selectedUser,
     List<UserModel>? availableUsers,
-    AttendanceDetailModel? result,
+    AttendanceDetailModel? attendanceResult,
+    UserCompletedAssistancesModel? assistanceResult,
   }) {
     return EmployeeHoursSearchState(
       isLoading: isLoading ?? this.isLoading,
@@ -51,11 +58,12 @@ class EmployeeHoursSearchState extends Equatable {
       endDate: endDate ?? this.endDate,
       selectedUser: selectedUser ?? this.selectedUser,
       availableUsers: availableUsers ?? this.availableUsers,
-      result: result ?? this.result,
+      attendanceResult: attendanceResult ?? this.attendanceResult,
+      assistanceResult: assistanceResult ?? this.assistanceResult,
     );
   }
 
-  // Método especial para limpiar fechas si es necesario
+  // Método especial para limpiar fechas
   EmployeeHoursSearchState clearDates() {
     return EmployeeHoursSearchState(
       isLoading: isLoading,
@@ -63,9 +71,10 @@ class EmployeeHoursSearchState extends Equatable {
       error: error,
       selectedUser: selectedUser,
       availableUsers: availableUsers,
-      result: result,
-      startDate: null, // Limpiamos
-      endDate: null, // Limpiamos
+      attendanceResult: attendanceResult,
+      assistanceResult: assistanceResult,
+      startDate: null,
+      endDate: null,
     );
   }
 
@@ -78,18 +87,20 @@ class EmployeeHoursSearchState extends Equatable {
     endDate,
     selectedUser,
     availableUsers,
-    result,
+    attendanceResult,
+    assistanceResult,
   ];
 }
 
 // --- NOTIFIER ---
 class EmployeeHoursSearchNotifier
     extends StateNotifier<EmployeeHoursSearchState> {
-  EmployeeHoursSearchNotifier()
-    : super(const EmployeeHoursSearchState());
+  EmployeeHoursSearchNotifier() : super(const EmployeeHoursSearchState());
 
   final _attendanceDatasource = AttendanceDatasource();
   final _usersDatasource = UsersDatasource();
+  // Inyectamos el nuevo datasource
+  final _assistanceDatasource = AssistanceManagementDatasource();
 
   Future<void> loadUsersCatalog() async {
     state = state.copyWith(isUsersLoading: true);
@@ -108,19 +119,10 @@ class EmployeeHoursSearchNotifier
     DateTime? newEnd = state.endDate;
     if (newEnd != null && date.isAfter(newEnd)) {
       newEnd = null;
-    } else {
     }
 
-    state = EmployeeHoursSearchState(
-      isLoading: state.isLoading,
-      isUsersLoading: state.isUsersLoading,
-      error: state.error,
-      selectedUser: state.selectedUser,
-      availableUsers: state.availableUsers,
-      result: state.result,
-      startDate: date,
-      endDate: newEnd,
-    );
+    // Usamos copyWith para mantener los otros estados (como availableUsers o resultados previos)
+    state = state.copyWith(startDate: date, endDate: newEnd);
   }
 
   void setEndDate(DateTime date) {
@@ -140,19 +142,63 @@ class EmployeeHoursSearchNotifier
     final end = DateFormat('yyyy-MM-dd').format(state.endDate!);
     final username = state.selectedUser!.username;
 
-    final (:response, :attendanceDetail) = await _attendanceDatasource
-        .getEmployeeAttendanceDetail(
+    try {
+      // Usamos Future.wait para paralelizar las peticiones
+      final results = await Future.wait([
+        // 1. Asistencia (Reloj)
+        _attendanceDatasource.getEmployeeAttendanceDetail(
           username: username,
           startDate: start,
           endDate: end,
+        ),
+        // 2. Servicios Técnicos
+        _assistanceDatasource.getUserCompletedAssistances(
+          username: username,
+          startDate: start,
+          endDate: end,
+        ),
+      ]);
+
+      // Casteamos los resultados (Dart Records)
+      final attendanceResp =
+          results[0]
+              as ({
+                ResponseModel response,
+                AttendanceDetailModel? attendanceDetail,
+              });
+      final assistanceResp =
+          results[1]
+              as ({
+                ResponseModel response,
+                UserCompletedAssistancesModel? data,
+              });
+
+      // Validamos errores
+      if (attendanceResp.response.isError) {
+        state = state.copyWith(
+          isLoading: false,
+          error: attendanceResp.response.error,
         );
+        return;
+      }
 
-    if (response.isError) {
-      state = state.copyWith(isLoading: false, error: response.error);
-      return;
+      if (assistanceResp.response.isError) {
+        state = state.copyWith(
+          isLoading: false,
+          error: assistanceResp.response.error,
+        );
+        return;
+      }
+
+      // Éxito: Guardamos ambos modelos
+      state = state.copyWith(
+        isLoading: false,
+        attendanceResult: attendanceResp.attendanceDetail,
+        assistanceResult: assistanceResp.data,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
-
-    state = state.copyWith(isLoading: false, result: attendanceDetail);
   }
 
   void reset() {
