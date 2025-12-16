@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "53170014209",
+    "project_id": "electrivel-app",
+    "storage_bucket": "electrivel-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53170014209:android:52dc6d5aa714e2b512d800",
+        "android_client_info": {
+          "package_name": "com.example.electrivel_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRnhHmSDxi2s4g3zJk-5T1jWV4cb8sFCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
