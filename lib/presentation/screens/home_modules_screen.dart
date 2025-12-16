@@ -1,5 +1,6 @@
 // Flutter
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 // External dependencies
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,6 +30,7 @@ class HomeModulesScreen extends ConsumerWidget {
                 onPressed: () async {
                   final authProvider = ref.read(loginFormProvider.notifier);
                   await authProvider.logout();
+                  await FlutterForegroundTask.stopService();
 
                   if (!context.mounted) return;
                   context.go(AppRoutes.login);

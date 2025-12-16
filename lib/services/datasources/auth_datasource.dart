@@ -18,7 +18,7 @@ class SessionData {
 
 class AuthDatasource {
 
-  Future<ResponseModel> login(String email, String password) async {
+  Future<(ResponseModel, AuthModel)> login(String email, String password) async {
     final response = await HttpPlugin.post('/auth/login', data: {
       'username': email,
       'password': password
@@ -26,12 +26,12 @@ class AuthDatasource {
 
 
     if (response.isError) {
-      return ResponseModel(error: response.errorMessage);
+      return (ResponseModel(error: response.errorMessage), AuthModel());
     }
 
     final authModel = AuthModel.fromJson(response.data);
     await _saveToken(authModel);
-    return ResponseModel();
+    return (ResponseModel(), authModel);
   }
 
   Future<void> logout() async {
@@ -97,8 +97,12 @@ class AuthDatasource {
       'refreshToken': sessionData
     });
 
+    if (refreshResult.isError) {
+      return (response: ResponseModel(error: 'Error al refrescar el token'), token: null);
+    }
+
     final authModel = AuthModel.fromJson(refreshResult.data);
-    if (!refreshResult.isError && authModel.accessToken != '') {
+    if (authModel.accessToken != '') {
       await _saveToken(authModel);
       return (response: ResponseModel(), token: authModel.accessToken);
     }

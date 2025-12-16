@@ -1,5 +1,5 @@
 // External dependencies
-import 'package:electrivel_app/services/datasources/auth_datasource.dart';
+import 'package:electrivel_app/services/services.dart';
 import 'package:electrivel_app/shared/shared.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hooks_riverpod/legacy.dart';
@@ -65,7 +65,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     state = state.copyWith(isLoading: isLoading);
   }
 
-  Future<ResponseModel> login() async {
+  Future<(ResponseModel, AuthModel)> login() async {
     isLoading(true);
     final loginResponse = await AuthDatasource().login(state.email, state.password);
     isLoading(false);

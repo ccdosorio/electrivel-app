@@ -1,18 +1,52 @@
 // Flutter
+import 'package:electrivel_app/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; // <--- 1. NUEVO IMPORT
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // External dependencies
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/config/config.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
+
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await _loadEnvironmentVariables();
   await initializeDateFormatting('es_ES', null);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
+
+  FlutterForegroundTask.initCommunicationPort();
+  FlutterForegroundTask.init(
+    androidNotificationOptions: AndroidNotificationOptions(
+      channelId: 'location_fg_channel',
+      channelName: 'Location Tracking',
+      channelDescription: 'Servicio de rastreo en segundo plano',
+      channelImportance: NotificationChannelImportance.HIGH,
+      priority: NotificationPriority.HIGH,
+      playSound: true,
+      enableVibration: true,
+    ),
+    foregroundTaskOptions: ForegroundTaskOptions(
+      autoRunOnBoot: false,
+      allowWakeLock: true,
+      allowWifiLock: true,
+      eventAction: ForegroundTaskEventAction.nothing(),
+    ),
+    iosNotificationOptions: const IOSNotificationOptions(
+      showNotification: true,
+      playSound: false,
+    ),
+  );
+
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -28,22 +62,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      routerConfig: AppRoutes.routes,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme,
-      title: 'Electrivel',
-
-      // --- Configuracion de idioma ---
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('es', 'ES')],
-      locale: const Locale('es', 'ES'),
-      // -------------------------------
+    return WithForegroundTask(
+      child: MaterialApp.router(
+        scaffoldMessengerKey: scaffoldMessengerKey,
+        routerConfig: AppRoutes.routes,
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.theme,
+        title: 'Electrivel',
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('es', 'ES')],
+        locale: const Locale('es', 'ES'),
+      ),
     );
   }
 }

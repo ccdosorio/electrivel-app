@@ -166,6 +166,8 @@ class _FormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      minLines: 3,
+      maxLines: 6,
       controller: controller,
       decoration: InputDecorations.decoration(
           labelText: label

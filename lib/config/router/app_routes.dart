@@ -15,6 +15,7 @@ class AppRoutes {
   static final String login = '/login';
   static final String home = '/home';
   static final String moduleChildren = '/moduleChildren';
+  static final String splash = '/splash.jpeg';
 
   // Assistance
   static final String assistance = '/assistance';
@@ -26,6 +27,7 @@ class AppRoutes {
   static final String attendanceCheckIn = '/attendance/check-in';
   static final String attendanceCheckOut = '/attendance/check-out';
   static final String attendanceManagement = '/attendance/management';
+  static final String attendanceManagementDetail = '/attendance/management/detail';
 
   // Users
   static final String users = '/users';
@@ -43,7 +45,7 @@ class AppRoutes {
 
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final routes = GoRouter(
-    initialLocation: login,
+    initialLocation: splash,
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(path: login, builder: (context, state) => LoginScreen()),
@@ -62,7 +64,9 @@ class AppRoutes {
       GoRoute(path: assistance, builder: (context, state) => AssistanceManagementScreen(isEmployee: true)),
       GoRoute(path: assistanceManagement, builder: (context, state) => AssistanceManagementScreen()),
       GoRoute(path: assistanceManagementCreate, builder: (context, state) => AssistanceManagementCreateScreen()),
+      GoRoute(path: attendanceManagementDetail, builder: (context, state) => AssistanceManagementDetailScreen()),
       GoRoute(path: reportHours, builder: (context, state) => EmployeeHoursDetailScreen()),
+      GoRoute(path: splash, builder: (context, state) => SplashScreen())
     ],
   );
 

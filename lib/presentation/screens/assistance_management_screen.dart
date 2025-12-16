@@ -17,7 +17,6 @@ import 'package:intl/intl.dart';
 // Internal dependencies
 import 'package:electrivel_app/services/services.dart';
 
-// ======= PÁGINA PRINCIPAL =======
 class AssistanceManagementScreen extends HookConsumerWidget {
   final bool isEmployee;
   const AssistanceManagementScreen({super.key, this.isEmployee = false});
@@ -170,7 +169,7 @@ class AssistanceCard extends HookConsumerWidget {
                   icon: Icons.play_circle_fill_rounded,
                   label: 'Inicio',
                   value: item.startTimestamp != null
-                      ? dateFmt.format(item.startTimestamp!)
+                      ? dateFmt.format(item.startTimestamp!.toLocal())
                       : '',
                 ),
                 const SizedBox(height: 10),
@@ -178,7 +177,7 @@ class AssistanceCard extends HookConsumerWidget {
                   icon: Icons.stop_circle_rounded,
                   label: 'Fin',
                   value: item.endTimestamp != null
-                      ? dateFmt.format(item.endTimestamp!)
+                      ? dateFmt.format(item.endTimestamp!.toLocal())
                       : '',
                 ),
               ],
@@ -197,7 +196,8 @@ class AssistanceCard extends HookConsumerWidget {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.visibility_rounded),
                       onPressed: () {
-                        // TODO: abrir detalle
+                        ref.read(assistanceDetailProvider.notifier).state = item;
+                        context.push(AppRoutes.attendanceManagementDetail);
                       },
                       label: const Text('Ver'),
                     ),
@@ -233,13 +233,16 @@ class AssistanceCard extends HookConsumerWidget {
                                   ),
                                   const SizedBox(height: 15),
                                   TextFormField(
+                                    minLines: 3,
+                                    maxLines: 6,
                                     controller: textEditingController,
                                     decoration: InputDecorations.decoration(
                                       labelText: 'Notas',
                                     ),
                                     validator: (value) {
-                                      if (value == null || value.isEmpty)
+                                      if (value == null || value.isEmpty) {
                                         return 'Requerido';
+                                      }
                                       return null;
                                     },
                                   ),

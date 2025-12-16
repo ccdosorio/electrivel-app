@@ -1,6 +1,7 @@
 // External dependencies
 import 'package:dio/dio.dart';
 import 'package:electrivel_app/services/services.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 // External dependencies
 import 'package:go_router/go_router.dart';
@@ -55,6 +56,7 @@ class DioInterceptor extends Interceptor {
         final context = AppRoutes.navigatorKey.currentContext;
         await SharedPreferencesPlugin.clearAll();
         await SecureStoragePlugin.deleteAllStorage();
+        await FlutterForegroundTask.stopService();
         context?.go(AppRoutes.login);
       }
 

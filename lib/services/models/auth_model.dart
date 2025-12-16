@@ -13,12 +13,12 @@ class AuthModel {
   final String tokenType;
 
   AuthModel({
-    required this.user,
-    required this.accessToken,
-    required this.expireIn,
-    required this.refreshToken,
-    required this.refreshExpiresIn,
-    required this.tokenType,
+    this.user = const User(),
+    this.accessToken = '',
+    this.expireIn = 0,
+    this.refreshToken = '',
+    this.refreshExpiresIn = 0,
+    this.tokenType = '',
   });
 
   factory AuthModel.fromJson(Map<String, dynamic> json) => AuthModel(
@@ -46,11 +46,11 @@ class User {
   final String fullName;
   final String role;
 
-  User({
-    required this.userId,
-    required this.username,
-    required this.fullName,
-    required this.role,
+  const User({
+    this.userId = 0,
+    this.username = '',
+    this.fullName = '',
+    this.role = '',
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(

@@ -18,5 +18,9 @@ class AppTheme {
       shape: CircleBorder(),
       backgroundColor: AppTheme.secondaryColor
     ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.white,
+    ),
+    scaffoldBackgroundColor: Colors.white
   );
 }
