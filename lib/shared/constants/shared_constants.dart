@@ -8,6 +8,7 @@ class SharedConstants {
   static final Map<String, IconData> iconNative = {
     "alarm": Icons.alarm,
     "build": Icons.build,
+    "build_circle": Icons.build_circle,
     "ambulance": Icons.fire_truck_outlined,
     "group": Icons.group,
     "pending_actions": Icons.pending_actions,
