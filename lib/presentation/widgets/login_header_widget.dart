@@ -16,8 +16,7 @@ class LoginHeaderWidget extends HookConsumerWidget {
       children: [
         Align(
           alignment: Alignment.center,
-          child: Icon(Icons.cloud_outlined,
-              size: 64, color: Colors.grey.shade300),
+          child: Image.asset('assets/splash.jpeg', width: 200, height: 200, fit: BoxFit.contain),
         ),
 
         const SizedBox(height: 24),

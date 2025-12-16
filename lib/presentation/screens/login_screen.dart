@@ -12,7 +12,6 @@ class LoginScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
       body: SafeArea(
               child: Center(
                 child: SingleChildScrollView(

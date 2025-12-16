@@ -114,7 +114,7 @@ class LoginFormWidget extends HookConsumerWidget {
 
           const SizedBox(height: 16),
 
-          _ResetPassword(),
+          // _ResetPassword(),
 
           const SizedBox(height: 24),
         ],

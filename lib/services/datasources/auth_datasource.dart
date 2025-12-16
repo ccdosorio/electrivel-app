@@ -97,8 +97,12 @@ class AuthDatasource {
       'refreshToken': sessionData
     });
 
+    if (refreshResult.isError) {
+      return (response: ResponseModel(error: 'Error al refrescar el token'), token: null);
+    }
+
     final authModel = AuthModel.fromJson(refreshResult.data);
-    if (!refreshResult.isError && authModel.accessToken != '') {
+    if (authModel.accessToken != '') {
       await _saveToken(authModel);
       return (response: ResponseModel(), token: authModel.accessToken);
     }
