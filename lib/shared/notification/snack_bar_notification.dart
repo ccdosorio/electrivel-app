@@ -24,9 +24,9 @@ class SnackBarNotifications {
     switch (theme) {
       case InfoThemeSnackBar.ok:
       case InfoThemeSnackBar.info:
-        return !isActionPressed ? const Duration(seconds: 2) : const Duration(days: 2);
+        return !isActionPressed ? const Duration(seconds: 3) : const Duration(days: 2);
       case InfoThemeSnackBar.alert:
-        return !isActionPressed ? const Duration(seconds: 2) : const Duration(days: 2);
+        return !isActionPressed ? const Duration(seconds: 6) : const Duration(days: 2);
     }
   }
 
