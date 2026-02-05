@@ -33,19 +33,28 @@ class HttpMapper {
     );
   }
 
-  /// Extrae el mensaje del cuerpo de error del backend ({ error: { message: ... } }).
+  /// Extrae el mensaje del cuerpo de error del backend ({ error: { type, message } }).
+  /// Usa la traducción amigable por [type] cuando existe; si no, el [message] del API.
   static String? _extractErrorMessage(DioException? exception, dynamic responseData) {
+    String? rawMessage;
+    String? errorType;
+
     if (responseData is Map<String, dynamic>) {
       final error = responseData['error'];
       if (error is Map<String, dynamic>) {
+        errorType = error['type'] is String ? error['type'] as String? : null;
         final message = error['message'];
-        if (message is String) return message;
+        if (message is String) rawMessage = message;
         if (message is List && message.isNotEmpty) {
-          return message.first is String ? message.first as String : message.first.toString();
+          rawMessage = message.first is String
+              ? message.first as String
+              : message.first.toString();
         }
       }
     }
-    return exception?.message;
+
+    final friendly = TranslateApiErrorHelper.getFriendlyMessage(errorType);
+    return friendly ?? rawMessage ?? exception?.message;
   }
 
   /// Extrae el tipo de error del cuerpo del backend ({ error: { type: ... } }).
