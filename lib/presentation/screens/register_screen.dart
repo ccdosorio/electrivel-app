@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 class RegisterScreen extends HookConsumerWidget {
   final bool isEntry;
   const RegisterScreen({super.key, required this.isEntry});
@@ -15,13 +14,13 @@ class RegisterScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final validateLocation = ref.watch(validateAccessToLocation);
-    
+
     return Scaffold(
       appBar: AppBar(),
       body: validateLocation.when(
-          data: (_) => _Body(isEntry: isEntry),
-          error: (e, _) => Text('Error $e'), 
-          loading: () => Center(child: CircularProgressIndicator.adaptive())
+        data: (_) => _Body(isEntry: isEntry),
+        error: (e, _) => Text('Error $e'),
+        loading: () => Center(child: CircularProgressIndicator.adaptive()),
       ),
     );
   }
@@ -35,14 +34,16 @@ class _Body extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final addressController = useTextEditingController();
-    final notesController= useTextEditingController();
+    final notesController = useTextEditingController();
 
     final theme = Theme.of(context);
 
-    final titleText   = isEntry ? 'Ingreso' : 'Salida';
-    final buttonText  = isEntry ? 'Marcar Ingreso' : 'Marcar Salida';
-    final buttonColor = isEntry ? const Color(0xFF62B357) : const Color(0xFFF25B67);
-    
+    final titleText = isEntry ? 'Ingreso' : 'Salida';
+    final buttonText = isEntry ? 'Marcar Ingreso' : 'Marcar Salida';
+    final buttonColor = isEntry
+        ? const Color(0xFF62B357)
+        : const Color(0xFFF25B67);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -61,14 +62,10 @@ class _Body extends HookConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              Center(
-                  child: ClockText()
-              ),
+              Center(child: ClockText()),
               const SizedBox(height: 8),
 
-              Center(
-                child: FormattedDateText(),
-              ),
+              Center(child: FormattedDateText()),
 
               const SizedBox(height: 28),
 
@@ -80,9 +77,7 @@ class _Body extends HookConsumerWidget {
 
               const SizedBox(height: 24),
 
-              Center(
-                child: CurrentLocationCard()
-              ),
+              Center(child: CurrentLocationCard()),
 
               Expanded(child: SizedBox()),
 
@@ -97,10 +92,12 @@ class _Body extends HookConsumerWidget {
                     final pos = asyncPos.value;
 
                     if (pos == null) {
-                      SnackBarNotifications.showContextSnackBar(context: context,
-                          title: 'Error',
-                          content: 'Ubicación aún no disponible. \nIntenta de nuevo.',
-                          theme: InfoThemeSnackBar.alert
+                      SnackBarNotifications.showContextSnackBar(
+                        context: context,
+                        title: 'Error',
+                        content:
+                            'Ubicación aún no disponible. \nIntenta de nuevo.',
+                        theme: InfoThemeSnackBar.alert,
                       );
                       return;
                     }
@@ -109,24 +106,26 @@ class _Body extends HookConsumerWidget {
                       locationAddress: addressController.text,
                       notes: notesController.text,
                       latitude: pos.latitude,
-                      longitude: pos.longitude
+                      longitude: pos.longitude,
                     );
 
-                    final response = await RegisterDatasource().register(isEntry, registerModel);
+                    final response = await RegisterDatasource().register(
+                      isEntry,
+                      registerModel,
+                    );
                     if (response.isError) {
                       SnackBarNotifications.showGeneralSnackBar(
-                          title: 'Error',
-                          content: response.error ?? '',
-                          theme: InfoThemeSnackBar.alert
+                        title: 'Error',
+                        content: response.error ?? '',
+                        theme: InfoThemeSnackBar.alert,
                       );
                       return;
                     }
 
-
                     SnackBarNotifications.showGeneralSnackBar(
-                        title: 'Éxito',
-                        content: 'Registro con éxito',
-                        theme: InfoThemeSnackBar.ok
+                      title: 'Éxito',
+                      content: 'Registro con éxito',
+                      theme: InfoThemeSnackBar.ok,
                     );
 
                     if (!context.mounted) return;
@@ -155,8 +154,6 @@ class _Body extends HookConsumerWidget {
   }
 }
 
-
-
 class _FormField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final TextEditingController controller;
@@ -169,9 +166,7 @@ class _FormField extends StatelessWidget {
       minLines: 3,
       maxLines: 6,
       controller: controller,
-      decoration: InputDecorations.decoration(
-          labelText: label
-      ),
+      decoration: InputDecorations.decoration(labelText: label),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Requerido';
         return null;

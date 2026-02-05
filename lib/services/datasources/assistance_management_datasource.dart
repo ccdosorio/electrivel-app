@@ -68,6 +68,18 @@ class AssistanceManagementDatasource {
     return ResponseModel();
   }
 
+  Future<ResponseModel> onsite(int id) async {
+    final response = await HttpPlugin.patch(
+      '/insurance-assistances/$id/onsite',
+    );
+
+    if (response.isError) {
+      return ResponseModel(error: response.errorMessage);
+    }
+
+    return ResponseModel();
+  }
+
   Future<ResponseModel> complete(
     int id, {
     required Position pos,

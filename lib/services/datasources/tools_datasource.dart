@@ -43,6 +43,38 @@ class ToolsDatasource {
     return ResponseModel();
   }
 
+  Future<({ResponseModel response, ToolModel? tool})> getToolById(
+    String toolId,
+  ) async {
+    final response = await HttpPlugin.get('/tools/$toolId');
+
+    if (response.isError) {
+      return (
+        response: ResponseModel(error: response.errorMessage),
+        tool: null,
+      );
+    }
+
+    final tool = ToolModel.fromJson(response.data);
+    return (response: ResponseModel(), tool: tool);
+  }
+
+  Future<ResponseModel> updateTool(
+    String originalId,
+    CreateToolModel tool,
+  ) async {
+    final response = await HttpPlugin.patch(
+      '/tools/catalog/$originalId',
+      data: tool.toJson(),
+    );
+
+    if (response.isError) {
+      return ResponseModel(error: response.errorMessage);
+    }
+
+    return ResponseModel();
+  }
+
   Future<List<ToolModel>> getToolsCatalog() async {
     final response = await HttpPlugin.get('/tools/catalog');
 

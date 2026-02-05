@@ -125,7 +125,13 @@ class ToolsListScreen extends HookConsumerWidget {
                           }
 
                           final tool = toolsState.tools[index];
-                          return ToolCard(tool: tool);
+                          return ToolCard(
+                            tool: tool,
+                            onEdit: () => context.push(
+                              '/tools/management/create',
+                              extra: tool.id,
+                            ),
+                          );
                         },
                       ),
                     ),

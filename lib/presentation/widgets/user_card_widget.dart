@@ -8,8 +8,14 @@ import 'package:electrivel_app/config/theme/app_theme.dart';
 class UserCard extends StatelessWidget {
   final UserModel employee;
   final VoidCallback? onDelete;
+  final VoidCallback? onResetPassword;
 
-  const UserCard({super.key, required this.employee, this.onDelete});
+  const UserCard({
+    super.key,
+    required this.employee,
+    this.onDelete,
+    this.onResetPassword,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -64,22 +70,39 @@ class UserCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Botón de eliminar
-              if (onDelete != null) ...[
-                const SizedBox(width: 8),
-                InkWell(
-                  onTap: onDelete,
-                  borderRadius: BorderRadius.circular(20),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Icon(
-                      Icons.delete_outline,
-                      color: Colors.red.shade400,
-                      size: 22,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (onResetPassword != null) ...[
+                    InkWell(
+                      onTap: onResetPassword,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.lock_reset,
+                          color: AppTheme.secondaryColor,
+                          size: 22,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                    const SizedBox(width: 4),
+                  ],
+                  if (onDelete != null)
+                    InkWell(
+                      onTap: onDelete,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: Colors.red.shade400,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 12),

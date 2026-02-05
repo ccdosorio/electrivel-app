@@ -56,7 +56,12 @@ class AppRoutes {
       GoRoute(path: users, builder: (context, state) => UsersListScreen()),
       GoRoute(path: usersCreate, builder: (context, state) => CreateUserScreen()),
       GoRoute(path: toolsManagement, builder: (context, state) => ToolsListScreen()),
-      GoRoute(path: toolsManagementCreate, builder: (context, state) => CreateToolScreen()),
+      GoRoute(
+        path: toolsManagementCreate,
+        builder: (context, state) => CreateToolScreen(
+          toolId: state.extra as String?,
+        ),
+      ),
       GoRoute(path: tools, builder: (context, state) => ToolsAssignedList()),
       GoRoute(path: toolsAssignedDetail, builder: (context, state) => ToolsAssignedListDetail()),
       GoRoute(path: toolsAssignedCreate, builder: (context, state) => ToolsAssignedCreateScreen()),

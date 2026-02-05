@@ -21,14 +21,42 @@ class HttpMapper {
 
   static HttpResponseSharedModel dioResponseToHttpResponseModel(DioException? exception, Response<dynamic>? response) {
     final isError = exception != null;
+    final responseData = exception?.response?.data ?? response?.data;
     return HttpResponseSharedModel(
       data: response?.data,
       headers: response?.headers.map,
-      statusCode: response?.statusCode ?? 200,
+      statusCode: exception?.response?.statusCode ?? response?.statusCode ?? 200,
       isError: isError,
-      errorMessage: exception?.message,
-      errorType: '${exception?.response?.data is Map ? exception?.response?.data['error']['type'] : ''}',
+      errorMessage: _extractErrorMessage(exception, responseData),
+      errorType: _extractErrorType(responseData),
       httpException: exception,
     );
+  }
+
+  /// Extrae el mensaje del cuerpo de error del backend ({ error: { message: ... } }).
+  static String? _extractErrorMessage(DioException? exception, dynamic responseData) {
+    if (responseData is Map<String, dynamic>) {
+      final error = responseData['error'];
+      if (error is Map<String, dynamic>) {
+        final message = error['message'];
+        if (message is String) return message;
+        if (message is List && message.isNotEmpty) {
+          return message.first is String ? message.first as String : message.first.toString();
+        }
+      }
+    }
+    return exception?.message;
+  }
+
+  /// Extrae el tipo de error del cuerpo del backend ({ error: { type: ... } }).
+  static String? _extractErrorType(dynamic responseData) {
+    if (responseData is Map<String, dynamic>) {
+      final error = responseData['error'];
+      if (error is Map<String, dynamic>) {
+        final type = error['type'];
+        if (type is String) return type;
+      }
+    }
+    return null;
   }
 }

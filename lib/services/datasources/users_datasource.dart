@@ -60,6 +60,19 @@ class UsersDatasource {
     return ResponseModel();
   }
 
+  Future<ResponseModel> changePassword(int userId, String newPassword) async {
+    final response = await HttpPlugin.patch(
+      '/users/$userId/change-password',
+      data: {'newPassword': newPassword},
+    );
+
+    if (response.isError) {
+      return ResponseModel(error: response.errorMessage);
+    }
+
+    return ResponseModel();
+  }
+
   Future<({ResponseModel response, List<UserModel>? users})>
   getUsersCatalog() async {
     final response = await HttpPlugin.get('/users/catalog');

@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/presentation/presentation.dart';
+import 'package:electrivel_app/presentation/widgets/change_password_dialog_widget.dart';
 import 'package:electrivel_app/config/config.dart';
 
 class UsersListScreen extends HookConsumerWidget {
@@ -134,11 +135,16 @@ class UsersListScreen extends HookConsumerWidget {
                     final employee = usersState.users[index];
                     return UserCard(
                       employee: employee,
+                      onResetPassword: () => showChangePasswordDialog(
+                        context,
+                        userId: employee.id,
+                        userDisplayName:
+                            '${employee.fullName} (@${employee.username})',
+                      ),
                       onDelete: () => _showDeleteConfirmation(
                         context,
                         ref,
-                        employee
-                            .id, // Asumiendo que UserModel tiene un campo 'id'
+                        employee.id,
                       ),
                     );
                   },

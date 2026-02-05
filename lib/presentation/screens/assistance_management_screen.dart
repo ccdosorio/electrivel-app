@@ -207,131 +207,251 @@ class AssistanceCard extends HookConsumerWidget {
             ),
           ],
 
-          if (isEmployee) ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.secondaryColor,
-                      ),
-                      onPressed: () {
-                        showDialog<bool>(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => DialogWidget(
-                            title: 'Confirmar esta acción',
-                            content: Form(
-                              key: formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '¿Está seguro de ${item.startTimestamp == null ? 'iniciar' : 'finalizar'} la asistencia?',
-                                  ),
-                                  const SizedBox(height: 15),
-                                  TextFormField(
-                                    minLines: 3,
-                                    maxLines: 6,
-                                    controller: textEditingController,
-                                    decoration: InputDecorations.decoration(
-                                      labelText: 'Notas',
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Requerido';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              DialogButtonWidget(
-                                onPressed: () {
-                                  context.pop();
-                                },
-                                textButton: 'Cancelar',
-                                isPrimary: false,
-                              ),
-                              DialogButtonWidget(
-                                onPressed: () async {
-                                  final validate =
-                                      formKey.currentState?.validate() ?? false;
-                                  if (!validate) return;
+          if (isEmployee) _EmployeeActions(
+            item: item,
+            formKey: formKey,
+            textEditingController: textEditingController,
+            isEmployee: isEmployee,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-                                  final asyncPos = await ref.read(
-                                    locationProvider.future,
-                                  );
-                                  final isStart = item.startTimestamp == null;
+// ======= ACCIONES EMPLEADO (Iniciar / Llegada al lugar / Finalizar) =======
+class _EmployeeActions extends ConsumerWidget {
+  const _EmployeeActions({
+    required this.item,
+    required this.formKey,
+    required this.textEditingController,
+    required this.isEmployee,
+  });
 
-                                  var response = ResponseModel();
+  final AssistanceManagementModel item;
+  final GlobalKey<FormState> formKey;
+  final TextEditingController textEditingController;
+  final bool isEmployee;
 
-                                  if (isStart) {
-                                    response =
-                                        await AssistanceManagementDatasource()
-                                            .start(
-                                              item.id,
-                                              pos: asyncPos,
-                                              startNotes:
-                                                  textEditingController.text,
-                                            );
-                                  } else {
-                                    response =
-                                        await AssistanceManagementDatasource()
-                                            .complete(
-                                              item.id,
-                                              pos: asyncPos,
-                                              endNotes:
-                                                  textEditingController.text,
-                                            );
-                                  }
+  bool get _canStart => item.startTimestamp == null;
+  bool get _canOnsite =>
+      item.startTimestamp != null && item.status == 'EN_PROCESO';
+  bool get _canComplete =>
+      item.startTimestamp != null && item.status == 'EN_SITIO';
 
-                                  textEditingController.clear();
-                                  if (response.isError) {
-                                    SnackBarNotifications.showGeneralSnackBar(
-                                      title: 'Error',
-                                      content: response.error!,
-                                      theme: InfoThemeSnackBar.alert,
-                                    );
-                                    return;
-                                  }
-
-                                  SnackBarNotifications.showGeneralSnackBar(
-                                    title: 'Éxito',
-                                    content: '¡Se ha devuelto con éxito!',
-                                    theme: InfoThemeSnackBar.ok,
-                                  );
-
-                                  ref.invalidate(
-                                    assistanceListProvider(isEmployee),
-                                  );
-                                  if (!context.mounted) return;
-                                  context.pop();
-                                },
-                                textButton: 'Confirmar',
-                                isPrimary: true,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      child: Text(
-                        item.startTimestamp == null ? 'Iniciar' : 'Finalizar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+      child: Row(
+        children: [
+          if (_canStart) ...[
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.secondaryColor,
+                ),
+                onPressed: () => _showStartDialog(context, ref),
+                child: const Text(
+                  'Iniciar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+          if (_canOnsite) ...[
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange.shade700,
+                ),
+                onPressed: () => _showOnsiteDialog(context, ref),
+                child: const Text(
+                  'Llegada al lugar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+          if (_canComplete) ...[
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.secondaryColor,
+                ),
+                onPressed: () => _showCompleteDialog(context, ref),
+                child: const Text(
+                  'Finalizar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
         ],
       ),
     );
+  }
+
+  void _showStartDialog(BuildContext context, WidgetRef ref) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DialogWidget(
+        title: 'Confirmar esta acción',
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('¿Está seguro de iniciar la asistencia?'),
+              const SizedBox(height: 15),
+              TextFormField(
+                minLines: 3,
+                maxLines: 6,
+                controller: textEditingController,
+                decoration: InputDecorations.decoration(labelText: 'Notas'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Requerido';
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          DialogButtonWidget(
+            onPressed: () => context.pop(),
+            textButton: 'Cancelar',
+            isPrimary: false,
+          ),
+          DialogButtonWidget(
+            onPressed: () async {
+              if (!(formKey.currentState?.validate() ?? false)) return;
+              final pos = await ref.read(locationProvider.future);
+              final response = await AssistanceManagementDatasource().start(
+                item.id,
+                pos: pos,
+                startNotes: textEditingController.text,
+              );
+              textEditingController.clear();
+              _handleResponse(context, ref, response, 'Asistencia iniciada');
+            },
+            textButton: 'Confirmar',
+            isPrimary: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOnsiteDialog(BuildContext context, WidgetRef ref) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DialogWidget(
+        title: 'Llegada al lugar',
+        content: const Text(
+          '¿Confirmar que ha llegado al lugar de la asistencia?',
+        ),
+        actions: [
+          DialogButtonWidget(
+            onPressed: () => context.pop(),
+            textButton: 'Cancelar',
+            isPrimary: false,
+          ),
+          DialogButtonWidget(
+            onPressed: () async {
+              final response =
+                  await AssistanceManagementDatasource().onsite(item.id);
+              _handleResponse(
+                context,
+                ref,
+                response,
+                'Llegada al lugar registrada',
+              );
+            },
+            textButton: 'Confirmar',
+            isPrimary: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCompleteDialog(BuildContext context, WidgetRef ref) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DialogWidget(
+        title: 'Confirmar esta acción',
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('¿Está seguro de finalizar la asistencia?'),
+              const SizedBox(height: 15),
+              TextFormField(
+                minLines: 3,
+                maxLines: 6,
+                controller: textEditingController,
+                decoration: InputDecorations.decoration(labelText: 'Notas'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Requerido';
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          DialogButtonWidget(
+            onPressed: () => context.pop(),
+            textButton: 'Cancelar',
+            isPrimary: false,
+          ),
+          DialogButtonWidget(
+            onPressed: () async {
+              if (!(formKey.currentState?.validate() ?? false)) return;
+              final pos = await ref.read(locationProvider.future);
+              final response = await AssistanceManagementDatasource().complete(
+                item.id,
+                pos: pos,
+                endNotes: textEditingController.text,
+              );
+              textEditingController.clear();
+              _handleResponse(context, ref, response, 'Asistencia finalizada');
+            },
+            textButton: 'Confirmar',
+            isPrimary: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleResponse(
+    BuildContext context,
+    WidgetRef ref,
+    ResponseModel response,
+    String successMessage,
+  ) {
+    if (response.isError) {
+      SnackBarNotifications.showGeneralSnackBar(
+        title: 'Error',
+        content: response.error!,
+        theme: InfoThemeSnackBar.alert,
+      );
+      return;
+    }
+    SnackBarNotifications.showGeneralSnackBar(
+      title: 'Éxito',
+      content: successMessage,
+      theme: InfoThemeSnackBar.ok,
+    );
+    ref.invalidate(assistanceListProvider(isEmployee));
+    if (!context.mounted) return;
+    context.pop();
   }
 }
 
@@ -441,11 +561,15 @@ class _StatusPill extends StatelessWidget {
       case 'EN_PROCESO':
       case 'ongoing':
         return Colors.green.shade600.withValues(alpha: .18);
+      case 'EN_SITIO':
+        return Colors.teal.shade600.withValues(alpha: .18);
       case 'completado':
       case 'completed':
+      case 'FINALIZADA':
         return Colors.blue.shade700.withValues(alpha: .18);
       case 'cancelado':
       case 'canceled':
+      case 'CANCELADA':
         return Colors.red.shade700.withValues(alpha: .18);
       case 'ASIGNADA':
       case 'pending':
@@ -460,11 +584,15 @@ class _StatusPill extends StatelessWidget {
       case 'EN_PROCESO':
       case 'ongoing':
         return Colors.green.shade800;
+      case 'EN_SITIO':
+        return Colors.teal.shade800;
       case 'completado':
       case 'completed':
+      case 'FINALIZADA':
         return Colors.blue.shade900;
       case 'cancelado':
       case 'canceled':
+      case 'CANCELADA':
         return Colors.red.shade900;
       case 'ASIGNADA':
       case 'pending':
@@ -478,10 +606,16 @@ class _StatusPill extends StatelessWidget {
     switch (s) {
       case 'EN_PROCESO':
         return 'En proceso';
+      case 'EN_SITIO':
+        return 'En sitio';
       case 'ASIGNADA':
         return 'Asignada';
+      case 'FINALIZADA':
+        return 'Finalizada';
+      case 'CANCELADA':
+        return 'Cancelada';
       default:
-        return '';
+        return s;
     }
   }
 

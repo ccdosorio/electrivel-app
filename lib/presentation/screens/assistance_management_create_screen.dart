@@ -48,7 +48,11 @@ class AssistanceManagementCreateScreen extends HookConsumerWidget {
 
     useEffect(() {
       if (usersSnap.hasData) {
-        users.value = usersSnap.data!.employeeList?.users ?? [];
+        final allUsers = usersSnap.data!.employeeList?.users ?? [];
+        users.value = allUsers
+            .where((u) =>
+                u.role.toUpperCase().contains('EMPLEADO'))
+            .toList();
       }
       return null;
     }, [usersSnap.data]);

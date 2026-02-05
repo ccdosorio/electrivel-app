@@ -87,8 +87,8 @@ class ToolsNotifier extends StateNotifier<ToolsState> {
     loadTools(); // Recargar con el nuevo filtro
   }
 
-  Future<void> loadTools({bool loadMore = false}) async {
-    if (state.isLoading) return;
+  Future<void> loadTools({bool loadMore = false, bool forceRefresh = false}) async {
+    if (!forceRefresh && state.isLoading) return;
 
     state = state.copyWith(isLoading: true);
 

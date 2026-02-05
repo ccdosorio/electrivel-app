@@ -9,6 +9,7 @@ export 'login_form_widget.dart';
 export 'login_header_widget.dart';
 export 'user_card_widget.dart';
 export 'create_user_form_widget.dart';
+export 'change_password_dialog_widget.dart';
 export 'tool_card_widget.dart';
 export 'create_tool_form_widget.dart';
 export 'tool_assignment_card.dart';

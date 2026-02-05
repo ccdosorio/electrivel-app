@@ -114,8 +114,6 @@ class LoginFormWidget extends HookConsumerWidget {
 
           const SizedBox(height: 16),
 
-          // _ResetPassword(),
-
           const SizedBox(height: 24),
         ],
       ),
@@ -170,22 +168,6 @@ class _SubmitButton extends HookConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ResetPassword extends HookConsumerWidget {
-  const _ResetPassword();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Align(
-      alignment: Alignment.center,
-      child: TextButton(
-        style: TextButton.styleFrom(foregroundColor: Colors.grey.shade500),
-        onPressed: () {},
-        child: const Text('¿Olvidaste tu contraseña?'),
       ),
     );
   }

@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Internal dependencies
+import 'package:electrivel_app/config/config.dart';
 import 'package:electrivel_app/services/services.dart';
 
 class ToolCard extends StatelessWidget {
   final ToolModel tool;
+  final VoidCallback? onEdit;
 
-  const ToolCard({super.key, required this.tool});
+  const ToolCard({super.key, required this.tool, this.onEdit});
 
   Color _getStatusColor() {
     if (!tool.isAvailable) return Colors.red.shade50;
@@ -71,7 +73,18 @@ class ToolCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
+              if (onEdit != null)
+                IconButton(
+                  onPressed: onEdit,
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    size: 22,
+                    color: AppTheme.secondaryColor,
+                  ),
+                  tooltip: 'Modificar herramienta',
+                ),
+              const SizedBox(width: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(

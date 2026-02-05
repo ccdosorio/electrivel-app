@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/config/config.dart';
+import 'package:electrivel_app/config/router/app_routes.dart';
 import 'package:electrivel_app/shared/shared.dart';
 import 'package:electrivel_app/presentation/presentation.dart';
 
@@ -23,6 +24,30 @@ class CreateToolFormWidget extends HookConsumerWidget {
     final brandController = useTextEditingController();
     final modelController = useTextEditingController();
     final serialNumberController = useTextEditingController();
+
+    final state = ref.watch(createToolProvider);
+    // Rellenar campos cuando se cargan datos en modo edición
+    useEffect(() {
+      if (state.editingToolId != null &&
+          state.id.isNotEmpty &&
+          idController.text != state.id) {
+        idController.text = state.id;
+        nameController.text = state.name;
+        descriptionController.text = state.description;
+        brandController.text = state.brand;
+        modelController.text = state.model;
+        serialNumberController.text = state.serialNumber;
+      }
+      return null;
+    }, [
+      state.editingToolId,
+      state.id,
+      state.name,
+      state.description,
+      state.brand,
+      state.model,
+      state.serialNumber,
+    ]);
 
     final validateId = ref.watch(createToolProvider.select((state) => state.validateId));
     final validateName = ref.watch(createToolProvider.select((state) => state.validateName));
@@ -237,6 +262,8 @@ class _SubmitButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final isEditMode = ref.watch(createToolProvider.select((state) => state.isEditMode));
+    final notifier = ref.read(createToolProvider.notifier);
 
     return SizedBox(
       width: double.infinity,
@@ -253,19 +280,23 @@ class _SubmitButton extends HookConsumerWidget {
           final isValidate = formKey.currentState?.validate() ?? false;
           if (!isValidate) return;
 
-          final response = await ref.read(createToolProvider.notifier).createTool();
+          final router = GoRouter.of(context);
+          final response = isEditMode
+              ? await notifier.updateTool()
+              : await notifier.createTool();
 
           if (!response.isError) {
+            final toolsNotifier = ref.read(toolsProvider.notifier);
+            await toolsNotifier.loadTools(forceRefresh: true);
+
             SnackBarNotifications.showGeneralSnackBar(
               title: 'Éxito',
-              content: 'Herramienta creada correctamente',
+              content: isEditMode
+                  ? 'Herramienta actualizada correctamente'
+                  : 'Herramienta creada correctamente',
               theme: InfoThemeSnackBar.ok,
             );
-
-            if (context.mounted) {
-              ref.invalidate(toolsProvider);
-              context.pop();
-            }
+            router.go(AppRoutes.toolsManagement);
             return;
           }
 
@@ -276,7 +307,9 @@ class _SubmitButton extends HookConsumerWidget {
           );
         },
         child: Text(
-          isLoading ? 'Creando...' : 'Crear Herramienta',
+          isLoading
+              ? (isEditMode ? 'Guardando...' : 'Creando...')
+              : (isEditMode ? 'Guardar cambios' : 'Crear Herramienta'),
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
