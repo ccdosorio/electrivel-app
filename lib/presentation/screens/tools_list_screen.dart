@@ -40,7 +40,11 @@ class ToolsListScreen extends HookConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/tools/management/create'),
+        onPressed: () async {
+          await context.push('/tools/management/create');
+          // Esta línea se ejecuta cuando vuelves de la pantalla de creación
+          ref.read(toolsProvider.notifier).loadTools();
+        },
         backgroundColor: AppTheme.secondaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -127,10 +131,14 @@ class ToolsListScreen extends HookConsumerWidget {
                           final tool = toolsState.tools[index];
                           return ToolCard(
                             tool: tool,
-                            onEdit: () => context.push(
-                              '/tools/management/create',
-                              extra: tool.id,
-                            ),
+                            onEdit: () async {
+                              await context.push(
+                                '/tools/management/create',
+                                extra: tool.id,
+                              );
+                              // Esta línea se ejecuta cuando vuelves de la pantalla de edición
+                              ref.read(toolsProvider.notifier).loadTools();
+                            },
                           );
                         },
                       ),

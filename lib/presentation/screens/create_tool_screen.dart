@@ -17,13 +17,14 @@ class CreateToolScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(createToolProvider.notifier);
-    final isEditMode = ref.watch(createToolProvider.select((state) => state.isEditMode));
+    final isEditMode = ref.watch(
+      createToolProvider.select((state) => state.isEditMode),
+    );
 
     useEffect(() {
+      Future.microtask(() => notifier.reset());
+
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (toolId == null || toolId!.isEmpty) {
-          notifier.clearEditMode();
-        }
         await notifier.loadInitialData();
         if (toolId != null && toolId!.isNotEmpty) {
           await notifier.loadToolForEdit(toolId!);
@@ -32,7 +33,9 @@ class CreateToolScreen extends HookConsumerWidget {
       return null;
     }, [toolId]);
 
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +45,10 @@ class CreateToolScreen extends HookConsumerWidget {
           ? const Center(child: CircularProgressIndicator.adaptive())
           : SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 child: CreateToolFormWidget(),
               ),
             ),

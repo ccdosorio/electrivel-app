@@ -27,32 +27,43 @@ class CreateToolFormWidget extends HookConsumerWidget {
 
     final state = ref.watch(createToolProvider);
     // Rellenar campos cuando se cargan datos en modo edición
-    useEffect(() {
-      if (state.editingToolId != null &&
-          state.id.isNotEmpty &&
-          idController.text != state.id) {
-        idController.text = state.id;
-        nameController.text = state.name;
-        descriptionController.text = state.description;
-        brandController.text = state.brand;
-        modelController.text = state.model;
-        serialNumberController.text = state.serialNumber;
-      }
-      return null;
-    }, [
-      state.editingToolId,
-      state.id,
-      state.name,
-      state.description,
-      state.brand,
-      state.model,
-      state.serialNumber,
-    ]);
+    useEffect(
+      () {
+        if (state.editingToolId != null &&
+            state.id.isNotEmpty &&
+            idController.text != state.id) {
+          idController.text = state.id;
+          nameController.text = state.name;
+          descriptionController.text = state.description;
+          brandController.text = state.brand;
+          modelController.text = state.model;
+          serialNumberController.text = state.serialNumber;
+        }
+        return null;
+      },
+      [
+        state.editingToolId,
+        state.id,
+        state.name,
+        state.description,
+        state.brand,
+        state.model,
+        state.serialNumber,
+      ],
+    );
 
-    final validateId = ref.watch(createToolProvider.select((state) => state.validateId));
-    final validateName = ref.watch(createToolProvider.select((state) => state.validateName));
-    final validateDescription = ref.watch(createToolProvider.select((state) => state.validateDescription));
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final validateId = ref.watch(
+      createToolProvider.select((state) => state.validateId),
+    );
+    final validateName = ref.watch(
+      createToolProvider.select((state) => state.validateName),
+    );
+    final validateDescription = ref.watch(
+      createToolProvider.select((state) => state.validateDescription),
+    );
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
 
     return Form(
       key: formKey,
@@ -160,8 +171,12 @@ class _CategoryDropdown extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(createToolProvider.select((state) => state.selectedCategory));
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final selectedCategory = ref.watch(
+      createToolProvider.select((state) => state.selectedCategory),
+    );
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
 
     return DropdownButtonFormField<String>(
       initialValue: selectedCategory,
@@ -175,11 +190,13 @@ class _CategoryDropdown extends HookConsumerWidget {
           child: Text(category.value),
         );
       }).toList(),
-      onChanged: isLoading ? null : (value) {
-        if (value != null) {
-          ref.read(createToolProvider.notifier).selectCategory(value);
-        }
-      },
+      onChanged: isLoading
+          ? null
+          : (value) {
+              if (value != null) {
+                ref.read(createToolProvider.notifier).selectCategory(value);
+              }
+            },
       validator: (value) {
         if (value == null) return 'Selecciona una categoría';
         return null;
@@ -193,8 +210,12 @@ class _ConditionDropdown extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCondition = ref.watch(createToolProvider.select((state) => state.selectedCondition));
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final selectedCondition = ref.watch(
+      createToolProvider.select((state) => state.selectedCondition),
+    );
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
 
     return DropdownButtonFormField<String>(
       initialValue: selectedCondition,
@@ -208,11 +229,13 @@ class _ConditionDropdown extends HookConsumerWidget {
           child: Text(condition.value),
         );
       }).toList(),
-      onChanged: isLoading ? null : (value) {
-        if (value != null) {
-          ref.read(createToolProvider.notifier).selectCondition(value);
-        }
-      },
+      onChanged: isLoading
+          ? null
+          : (value) {
+              if (value != null) {
+                ref.read(createToolProvider.notifier).selectCondition(value);
+              }
+            },
       validator: (value) {
         if (value == null) return 'Selecciona una condición';
         return null;
@@ -226,9 +249,15 @@ class _CompanyDropdown extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final companies = ref.watch(createToolProvider.select((state) => state.companies));
-    final selectedCompanyId = ref.watch(createToolProvider.select((state) => state.selectedCompanyId));
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
+    final companies = ref.watch(
+      createToolProvider.select((state) => state.companies),
+    );
+    final selectedCompanyId = ref.watch(
+      createToolProvider.select((state) => state.selectedCompanyId),
+    );
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
 
     return DropdownButtonFormField<String>(
       initialValue: selectedCompanyId,
@@ -242,11 +271,13 @@ class _CompanyDropdown extends HookConsumerWidget {
           child: Text(company.name),
         );
       }).toList(),
-      onChanged: isLoading ? null : (value) {
-        if (value != null) {
-          ref.read(createToolProvider.notifier).selectCompany(value);
-        }
-      },
+      onChanged: isLoading
+          ? null
+          : (value) {
+              if (value != null) {
+                ref.read(createToolProvider.notifier).selectCompany(value);
+              }
+            },
       validator: (value) {
         if (value == null) return 'Selecciona una empresa';
         return null;
@@ -261,8 +292,12 @@ class _SubmitButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoading = ref.watch(createToolProvider.select((state) => state.isLoading));
-    final isEditMode = ref.watch(createToolProvider.select((state) => state.isEditMode));
+    final isLoading = ref.watch(
+      createToolProvider.select((state) => state.isLoading),
+    );
+    final isEditMode = ref.watch(
+      createToolProvider.select((state) => state.isEditMode),
+    );
     final notifier = ref.read(createToolProvider.notifier);
 
     return SizedBox(
@@ -276,36 +311,46 @@ class _SubmitButton extends HookConsumerWidget {
           ),
           shadowColor: Colors.black26,
         ),
-        onPressed: isLoading ? null : () async {
-          final isValidate = formKey.currentState?.validate() ?? false;
-          if (!isValidate) return;
+        onPressed: isLoading
+            ? null
+            : () async {
+                final isValidate = formKey.currentState?.validate() ?? false;
+                if (!isValidate) return;
 
-          final router = GoRouter.of(context);
-          final response = isEditMode
-              ? await notifier.updateTool()
-              : await notifier.createTool();
+                // 1. Ejecutar la acción (Crear o Editar)
+                final response = isEditMode
+                    ? await notifier.updateTool()
+                    : await notifier.createTool();
 
-          if (!response.isError) {
-            final toolsNotifier = ref.read(toolsProvider.notifier);
-            await toolsNotifier.loadTools(forceRefresh: true);
+                if (!response.isError) {
+                  // 2. Refrescar la lista de herramientas inmediatamente
+                  ref
+                      .read(toolsProvider.notifier)
+                      .loadTools(forceRefresh: true);
 
-            SnackBarNotifications.showGeneralSnackBar(
-              title: 'Éxito',
-              content: isEditMode
-                  ? 'Herramienta actualizada correctamente'
-                  : 'Herramienta creada correctamente',
-              theme: InfoThemeSnackBar.ok,
-            );
-            router.go(AppRoutes.toolsManagement);
-            return;
-          }
+                  // 3. Mostrar el mensaje de éxito
+                  SnackBarNotifications.showGeneralSnackBar(
+                    title: 'Éxito',
+                    content: isEditMode
+                        ? 'Herramienta actualizada correctamente'
+                        : 'Herramienta creada correctamente',
+                    theme: InfoThemeSnackBar.ok,
+                  );
 
-          SnackBarNotifications.showGeneralSnackBar(
-            title: 'Error',
-            content: response.error!,
-            theme: InfoThemeSnackBar.alert,
-          );
-        },
+                  // 4. Volver a la pantalla anterior
+                  if (context.mounted) {
+                    context.pop();
+                  }
+                  return;
+                }
+
+                // Si hay error, mostrarlo
+                SnackBarNotifications.showGeneralSnackBar(
+                  title: 'Error',
+                  content: response.error!,
+                  theme: InfoThemeSnackBar.alert,
+                );
+              },
         child: Text(
           isLoading
               ? (isEditMode ? 'Guardando...' : 'Creando...')
