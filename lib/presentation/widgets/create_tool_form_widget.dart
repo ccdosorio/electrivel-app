@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Internal dependencies
 import 'package:electrivel_app/config/config.dart';
-import 'package:electrivel_app/config/router/app_routes.dart';
 import 'package:electrivel_app/shared/shared.dart';
 import 'package:electrivel_app/presentation/presentation.dart';
 
@@ -317,18 +316,17 @@ class _SubmitButton extends HookConsumerWidget {
                 final isValidate = formKey.currentState?.validate() ?? false;
                 if (!isValidate) return;
 
-                // 1. Ejecutar la acción (Crear o Editar)
                 final response = isEditMode
                     ? await notifier.updateTool()
                     : await notifier.createTool();
 
                 if (!response.isError) {
-                  // 2. Refrescar la lista de herramientas inmediatamente
+                  // 1. Refrescar los datos en el provider de la lista
                   ref
                       .read(toolsProvider.notifier)
                       .loadTools(forceRefresh: true);
 
-                  // 3. Mostrar el mensaje de éxito
+                  // 2. Mostrar el SnackBar
                   SnackBarNotifications.showGeneralSnackBar(
                     title: 'Éxito',
                     content: isEditMode
@@ -337,17 +335,19 @@ class _SubmitButton extends HookConsumerWidget {
                     theme: InfoThemeSnackBar.ok,
                   );
 
-                  // 4. Volver a la pantalla anterior
+                  // 3. NAVEGACIÓN AUTOMÁTICA
+                  // Verificamos si el widget sigue montado para evitar errores
                   if (context.mounted) {
+                    // .pop() cierra la pantalla actual y te regresa a la anterior (el listado)
                     context.pop();
                   }
                   return;
                 }
 
-                // Si hay error, mostrarlo
+                // Manejo de error...
                 SnackBarNotifications.showGeneralSnackBar(
                   title: 'Error',
-                  content: response.error!,
+                  content: response.error ?? 'Error desconocido',
                   theme: InfoThemeSnackBar.alert,
                 );
               },
